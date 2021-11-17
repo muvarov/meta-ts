@@ -1,0 +1,32 @@
+From ed404b6afebd735daee0a377168decf0400b9a8c Mon Sep 17 00:00:00 2001
+From: Masahisa Kojima <masahisa.kojima@linaro.org>
+Date: Mon, 15 Mar 2021 12:02:55 +0900
+Subject: [PATCH] plat-synquacer: add whole DRAM region for u-boot support
+
+Signed-off-by: Masahisa Kojima <masahisa.kojima@linaro.org>
+---
+ core/arch/arm/plat-synquacer/main.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/core/arch/arm/plat-synquacer/main.c b/core/arch/arm/plat-synquacer/main.c
+index b266f5f4..790a1c64 100644
+--- a/core/arch/arm/plat-synquacer/main.c
++++ b/core/arch/arm/plat-synquacer/main.c
+@@ -27,6 +27,14 @@ register_phys_mem_pgdir(MEM_AREA_IO_NSEC, CONSOLE_UART_BASE,
+ register_phys_mem_pgdir(MEM_AREA_IO_SEC, GIC_BASE, CORE_MMU_PGDIR_SIZE);
+ register_phys_mem_pgdir(MEM_AREA_IO_SEC, THERMAL_SENSOR_BASE,
+ 			CORE_MMU_PGDIR_SIZE);
++/*
++ * need to register whole DRAM region, because U-boot only
++ * supports dynamic allocation of the shared memory, it will use
++ * whole DRAM area.
++ */
++register_ddr(0x80000000, 0x7C000000);
++register_ddr(0x880000000, 0x780000000);
++register_ddr(0x8800000000, 0x800000000);
+ 
+ void itr_core_handler(void)
+ {
+-- 
+2.17.1
+

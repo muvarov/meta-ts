@@ -9,26 +9,18 @@ PE = "1"
 # We use the revision in order to avoid having to fetch it from the
 # repo during parse
 
-PV = "2021.01"
+PV = "2021.10"
 
 SRC_URI = "git://git.denx.de/u-boot.git"
-SRCREV = "c4fddedc48f336eabc4ce3f74940e6aa372de18c"
+SRCREV = "d80bb749fab53da72c4a0e09b8c2d2aaa3103c91"
 
 SRC_URI += " \
-    file://0000-ti-am572x-enable-boot_distrocmd.patch \
-    file://0001-stm32mp-update-MMU-config-before-the-relocation.patch \
-    file://0002-stm32mp-update-the-mmu-configuration-for-SPL-and-pre.patch \
-    file://0003-arm-remove-TTB_SECT_XN_MASK-in-DCACHE_WRITETHROUGH.patch \
-    file://0004-arm-cosmetic-align-TTB_SECT-define-value.patch \
-    file://0005-arm-cp15-update-DACR-value-to-activate-access-contro.patch \
-    file://0006-arm-omap2-remove-arm_init_domains.patch \
-    file://0007-arm-cp15-remove-weak-function-arm_init_domains.patch \
-    file://0008-arm-remove-set_dacr-get_dacr-functions.patch \
-    file://0009-tpm2-Introduce-TIS-tpm-core.patch \
-    file://0010-tpm2-Add-a-TPMv2-MMIO-TIS-driver.patch \
-    file://ledge_stm32mp157c_dk2_trusted_defconfig \
+    file://0001-synquacer-add-fTPM-support.patch \
+    file://0002-Revert-configs-synquacer-Make-U-Boot-binary-position.patch \
     file://ubootefi.var \
-    "
+   "
+
+RM_WORK_EXCLUDE += "u-boot-ledge"
 
 S = "${WORKDIR}/git"
 B = "${WORKDIR}/build"
@@ -36,6 +28,7 @@ B = "${WORKDIR}/build"
 SRC_URI_append_ledge-qemuarm = " file://ledge-qemuarm_defconfig"
 SRC_URI_append_ledge-qemuarm64 = " file://ledge-qemuarm64_defconfig"
 SRC_URI_append_ledge-ti-am572x = " file://ledge-ti-am572x_defconfig"
+SRC_URI_append_ledge-synquacer = " file://synquacer_developerbox_defconfig"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 

@@ -16,7 +16,8 @@ PV = "2.4"
 SRC_URI = "git://github.com/ARM-software/arm-trusted-firmware.git;protocol=https;nobranch=1"
 SRCREV = "e2c509a39c6cc4dda8734e6509cdbe6e3603cdfc"
 
-SRC_URI += "file://0001-plat-qemu-trigger-reboot-with-secure-pl061.patch"
+SRC_URI_append_ledge-synquacer = " file://0001-fiptool-Accept-fixed-offset-for-image.patch"
+SRC_URI_append_ledge-synquacer = " file://dummy.bin"
 
 ALLOW_EMPTY_${PN} = "1"
 
@@ -28,6 +29,7 @@ inherit deploy
 DEPENDS += "dtc-native"
 DEPENDS_ledge-qemuarm += " optee-os virtual/bootloader "
 DEPENDS_ledge-qemuarm64 += " optee-os virtual/bootloader "
+DEPENDS_ledge-synquacer += " optee-os virtual/bootloader scp-firmware"
 
 # ledge-stm32mp157c-dk2 specific
 TF_A_PLATFORM_ledge-stm32mp157c-dk2 = "stm32mp1"
@@ -38,6 +40,11 @@ TF_A_PLATFORM_ledge-qemuarm = "qemu"
 
 # ledge-qemuarm64 specific
 TF_A_PLATFORM_ledge-qemuarm64 = "qemu"
+COMPATIBLE_MACHINE = "ledge-synquacer"
+COMPATIBLE_MACHINE_ledge-synquacer = "ledge-synquacer"
+
+# ledge-synquacer specific
+TF_A_PLATFORM_ledge-synquacer = "synquacer"
 
 # Extra make settings
 EXTRA_OEMAKE = ' CROSS_COMPILE=${TARGET_PREFIX} '
@@ -46,6 +53,7 @@ EXTRA_OEMAKE_append_armv7a = ' ARCH=aarch32 ARM_ARCH_MAJOR=7 '
 EXTRA_OEMAKE_append_armv7ve = ' ARCH=aarch32 ARM_ARCH_MAJOR=7 '
 EXTRA_OEMAKE_append_ledge-stm32mp157c-dk2 = "AARCH32_SP=optee STM32MP_SDMMC=1 STM32MP_EMMC=1"
 EXTRA_OEMAKE_append_ledge-qemuarm = ' AARCH32_SP=optee ARM_TSP_RAM_LOCATION=tdram BL32_RAM_LOCATION=tdram '
+EXTRA_OEMAKE_append_ledge-synquacer = ' PRELOADED_BL33_BASE=0x08200000 SQ_USE_SCMI_DRIVER=1 '
 EXTRA_OEMAKE_append_aarch64 = "${@bb.utils.contains('MACHINE_FEATURES', 'optee', ' SPD=opteed ', '', d)}"
 
 # FIP image
@@ -66,6 +74,11 @@ do_configure[noexec] = "1"
 do_compile() {
     oe_runmake -C ${S} BUILD_PLAT=${B}/${config} all
 }
+
+do_compile_ledge-synquacer() {
+    oe_runmake -C ${S} BUILD_PLAT=${B}/${config} all fiptool
+}
+
 do_compile_ledge-stm32mp157c-dk2() {
     if [ -n "${TF_A_DEVICETREE}" ]; then
         for dt in ${TF_A_DEVICETREE}; do
@@ -165,6 +178,17 @@ do_deploy_append_ledge-stm32mp157c-dk2() {
         tf_a_binary_basename=$(find ${B}/ -name "tf-a-*.stm32" -exec basename {} \; | sed 's|\.stm32||g')
         install -m 644 ${B}/${tf_a_binary_basename}.stm32 ${DEPLOYDIR}/arm-trusted-firmware/
     fi
+}
+
+do_deploy_append_ledge-synquacer() {
+    echo "deploy synquacer"
+    cd ${DEPLOYDIR}
+    echo ${STAGING_DIR_TARGET}
+    ${S}/tools/fiptool/fiptool create --tb-fw ./arm-trusted-firmware/bl31.bin \
+        --soc-fw ${WORKDIR}/dummy.bin --scp-fw ${WORKDIR}/dummy.bin \
+        --tos-fw ${STAGING_DIR_TARGET}/lib/firmware/tee-pager_v2.bin@380000 \
+        fip_all_arm_tf_optee.bin
+    cd -
 }
 
 addtask deploy before do_build after do_compile
