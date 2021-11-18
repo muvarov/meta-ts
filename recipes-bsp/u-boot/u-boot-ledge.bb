@@ -14,13 +14,11 @@ PV = "2021.10"
 SRC_URI = "git://git.denx.de/u-boot.git"
 SRCREV = "d80bb749fab53da72c4a0e09b8c2d2aaa3103c91"
 
-SRC_URI += " \
-    file://0001-synquacer-add-fTPM-support.patch \
-    file://0002-Revert-configs-synquacer-Make-U-Boot-binary-position.patch \
-    file://ubootefi.var \
-   "
+SRC_URI += " file://ubootefi.var"
 
-RM_WORK_EXCLUDE += "u-boot-ledge"
+SRC_URI_append_ledge-synquacer = " file://0001-synquacer-add-fTPM-support.patch"
+SRC_URI_append_ledge-synquacer = " file://0002-Revert-configs-synquacer-Make-U-Boot-binary-position.patch"
+SRC_URI_append_ledge-synquacer = " file://0003-configs-synquacer-Fix-dfu_alt_info-to-use-nor1.patch"
 
 S = "${WORKDIR}/git"
 B = "${WORKDIR}/build"

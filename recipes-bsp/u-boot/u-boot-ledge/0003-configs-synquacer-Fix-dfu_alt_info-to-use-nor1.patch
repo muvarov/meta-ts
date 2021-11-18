@@ -1,0 +1,33 @@
+From b0aaa45344067323b7cd9495b046731db19eff1a Mon Sep 17 00:00:00 2001
+From: Masami Hiramatsu <masami.hiramatsu@linaro.org>
+Date: Wed, 10 Nov 2021 09:40:07 +0900
+Subject: [PATCH 3/3] configs: synquacer: Fix dfu_alt_info to use nor1
+
+Fix dfu_alt_info to use nor1 instead of the device name.
+This reverts a part of commit 59bd18d4c4d7 ("configs: synquacer:
+Remove mtdparts settings and update DFU setting") because the
+commit a4f2d8341455 ("mtd: spi: nor: force mtd name to "nor%d"")
+changed the mtd device naming scheme to nor%d.
+
+Signed-off-by: Masami Hiramatsu <masami.hiramatsu@linaro.org>
+Acked-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
+---
+ include/configs/synquacer.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/configs/synquacer.h b/include/configs/synquacer.h
+index 4503cf3f6d..8fe10d7485 100644
+--- a/include/configs/synquacer.h
++++ b/include/configs/synquacer.h
+@@ -62,7 +62,7 @@
+ /* #define CONFIG_SYS_PCI_64BIT		1 */
+ 
+ #define DEFAULT_DFU_ALT_INFO "dfu_alt_info="				\
+-			"mtd mx66u51235f=u-boot.bin raw 200000 100000;"	\
++			"mtd nor1=u-boot.bin raw 200000 100000;"	\
+ 			"fip.bin raw 180000 78000;"			\
+ 			"optee.bin raw 500000 100000\0"
+ 
+-- 
+2.17.1
+
