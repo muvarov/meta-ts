@@ -11,12 +11,13 @@ LIC_FILES_CHKSUM = "file://license.rst;md5=1dd070c98a281d18d9eefd938729b031"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 
-PV = "2.4"
+PV = "2.5"
 
 SRC_URI = "git://github.com/ARM-software/arm-trusted-firmware.git;protocol=https;nobranch=1"
-SRCREV = "e2c509a39c6cc4dda8734e6509cdbe6e3603cdfc"
+SRCREV = "c158878249f1bd930906ebd744b90d3f2a8265f1"
 
 SRC_URI_append_ledge-synquacer = " file://0001-fiptool-Accept-fixed-offset-for-image.patch"
+SRC_URI_append_ledge-synquacer = " file://0002-fix-plat-synquacer-update-scmi-power-domain-off-hand.patch"
 SRC_URI_append_ledge-synquacer = " file://dummy.bin"
 
 ALLOW_EMPTY_${PN} = "1"

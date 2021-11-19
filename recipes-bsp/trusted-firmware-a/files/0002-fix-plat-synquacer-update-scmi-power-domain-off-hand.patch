@@ -1,0 +1,41 @@
+From f7f5d2c4cd209c2d21244da4fa442050eb4531ab Mon Sep 17 00:00:00 2001
+From: Masahisa Kojima <masahisa.kojima@linaro.org>
+Date: Tue, 3 Aug 2021 16:48:53 +0900
+Subject: [PATCH] fix(plat/synquacer): update scmi power domain off handling
+
+In the SCMI power domain off handling, configure GIC
+to prevent interrupt toward to the core to be turned off,
+and configure CCN to disable coherency when the cluster is turned off.
+The same operation is done in SCPI power domain off processing.
+
+This commit adds the missing operation in SCMI power domain
+off handling.
+
+Signed-off-by: Masahisa Kojima <masahisa.kojima@linaro.org>
+Change-Id: Ib3523de488500c2e8bdc74e4cb8772a1442d9781
+---
+ plat/socionext/synquacer/sq_psci.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/plat/socionext/synquacer/sq_psci.c b/plat/socionext/synquacer/sq_psci.c
+index 0c97fcf79..4168df9da 100644
+--- a/plat/socionext/synquacer/sq_psci.c
++++ b/plat/socionext/synquacer/sq_psci.c
+@@ -97,6 +97,14 @@ static void sq_power_down_common(const psci_power_state_t *target_state)
+ void sq_pwr_domain_off(const psci_power_state_t *target_state)
+ {
+ #if SQ_USE_SCMI_DRIVER
++	/* Prevent interrupts from spuriously waking up this cpu */
++	sq_gic_cpuif_disable();
++
++	/* Cluster is to be turned off, so disable coherency */
++	if (SQ_CLUSTER_PWR_STATE(target_state) == SQ_LOCAL_STATE_OFF) {
++		plat_sq_interconnect_exit_coherency();
++	}
++
+ 	sq_scmi_off(target_state);
+ #else
+ 	sq_power_down_common(target_state);
+-- 
+2.17.1
+
