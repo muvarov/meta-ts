@@ -1,0 +1,1 @@
+# Synquacer specific configuration
