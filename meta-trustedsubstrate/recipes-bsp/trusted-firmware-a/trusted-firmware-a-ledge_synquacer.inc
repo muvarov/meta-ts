@@ -33,7 +33,7 @@ TFA_SPD = "opteed"
 TFA_SPMD_SPM_AT_SEL2 = "0"
 
 # BL2 loads BL32 (optee). So, optee needs to be built first:
-DEPENDS += "optee-os"
+DEPENDS += " optee-os virtual/bootloader scp-firmware"
 
 EXTRA_OEMAKE:append = ' PRELOADED_BL33_BASE=0x08200000 SQ_USE_SCMI_DRIVER=1' 
 
