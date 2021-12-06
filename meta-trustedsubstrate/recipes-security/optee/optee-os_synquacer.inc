@@ -1,5 +1,5 @@
 SRC_URI = "git://git.trustedfirmware.org/OP-TEE/optee_os.git;protocol=https;branch=master"
-SRCREV = "3d47a131bca1d9ed511bfd516aa5e70269e12c1d"
+SRCREV = "d21befa5e53eae9db469eba1685f5aa5c6f92c2f"
 PV .= "+git${SRCREV}"
 
 DEPENDS += "python3-pycryptodomex-native"
@@ -7,8 +7,7 @@ DEPENDS += "python3-pycryptodomex-native"
 FILESEXTRAPATHS:prepend := "${THISDIR}/files/optee-os/synquacer:"
 
 SRC_URI:append = " \
-		  file://0001-plat-synquacer-add-whole-DRAM-region-for-u-boot-supp.patch \
-		  file://0002-core-Allow-mobj_phys-to-allocate-IO-regions.patch"
+		  file://0001-plat-synquacer-add-whole-DRAM-region-for-u-boot-supp.patch"
 
 COMPATIBLE_MACHINE = "ledge-synquacer"
 
