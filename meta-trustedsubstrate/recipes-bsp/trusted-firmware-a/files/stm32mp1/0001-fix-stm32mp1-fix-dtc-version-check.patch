@@ -1,0 +1,36 @@
+From b1d84bee439a393f75230e6d2b43c3335404bd6b Mon Sep 17 00:00:00 2001
+From: Max Uvarov <muvarov@gmail.com>
+Date: Tue, 7 Dec 2021 14:11:26 +0300
+Subject: [PATCH] fix(stm32mp1): fix dtc version check
+
+Leading + after version which appears after OE build generates
+wrong version number to compare. Fix just removes '+' from the
+version. Also strip beginning 'v'.
+
+| dtc version too old (v1.6.1+), you need at least version 1.4.4
+| plat/st/stm32mp1/platform.mk:312: recipe for target 'check_dtc_version' failed
+
+Signed-off-by: Maxim Uvarov <maxim.uvarov@linaro.org>
+---
+ plat/st/stm32mp1/platform.mk | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/plat/st/stm32mp1/platform.mk b/plat/st/stm32mp1/platform.mk
+index badc926c0..da80c9a7f 100644
+--- a/plat/st/stm32mp1/platform.mk
++++ b/plat/st/stm32mp1/platform.mk
+@@ -310,9 +310,9 @@ clean_stm32image:
+ 
+ check_dtc_version:
+ 	$(eval DTC_V = $(shell $(DTC) -v | awk '{print $$NF}'))
+-	$(eval DTC_VERSION = $(shell printf "%d" $(shell echo ${DTC_V} | cut -d- -f1 | sed "s/\./0/g")))
++	$(eval DTC_VERSION = $(shell printf "%d" $(shell echo ${DTC_V} | cut -d- -f1 | sed "s/\./0/g" | sed s"/v//" | sed "s/+//")))
+ 	@if [ ${DTC_VERSION} -lt 10404 ]; then \
+-		echo "dtc version too old (${DTC_V}), you need at least version 1.4.4"; \
++		echo "dtc version too old (${DTC_V}, ${DTC_VERSION}), you need at least version 1.4.4"; \
+ 		false; \
+ 	fi
+ 
+-- 
+2.17.1
+
