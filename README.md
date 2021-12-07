@@ -39,7 +39,10 @@ Build
 -----
 1. pip install kas
 
-2. kas build ci/qemuarm64-secureboot.yml
+2. Build one of supported targets:
+	- kas build ci/qemuarm64-secureboot.yml
+	- kas build ci/ledge-synquacer.yml
+	- kas build ci/ledge-stm32mp157c-dk2.yaml
 
 Reporting bugs
 --------------
