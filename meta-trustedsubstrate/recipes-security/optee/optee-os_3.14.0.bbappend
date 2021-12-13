@@ -1,6 +1,6 @@
 # Machine specific configurations
 
-DEPENDS:append = "dtc-native"
+DEPENDS:append = " dtc-native"
 
 MACHINE_OPTEE_OS_REQUIRE ?= ""
 MACHINE_OPTEE_OS_REQUIRE:ledge-synquacer = "optee-os_synquacer.inc"
