@@ -56,6 +56,9 @@ do_deploy:append() {
     cd -
 }
 
+TFA_FWUPD_BIN = "${DEPLOYDIR}/fip_all_arm_tf_optee.bin"
+require trusted-firmware-a_fwupd.inc
+
 addtask deploy before do_build after do_compile
 
 FILES:${PN} = "/boot /firmware"
