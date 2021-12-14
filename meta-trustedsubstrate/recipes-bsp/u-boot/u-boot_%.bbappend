@@ -11,7 +11,7 @@ SRC_URI:append:ledge-stm32mp157c-dk2 = " file://ledge_stm32mp157c_dk2_trusted_de
 COMPATIBLE_MACHINE:ledge-stm32mp157c-dk2 = "ledge-stm32mp157c-dk2"
 
 do_configure:prepend() {
-	cp -r ${WORKDIR}/*_defconfig ${S}/configs/
+	cp -r ${WORKDIR}/*_defconfig ${S}/configs/ || true
 	cp ${WORKDIR}/ubootefi.var ${S}/
 }
 
