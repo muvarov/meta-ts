@@ -43,6 +43,7 @@ Build
 	- kas build ci/qemuarm64-secureboot.yml
 	- kas build ci/ledge-synquacer.yml
 	- kas build ci/ledge-stm32mp157c-dk2.yaml
+	- kas build ci/ledge-rockpi4b.yml
 
 Reporting bugs
 --------------
