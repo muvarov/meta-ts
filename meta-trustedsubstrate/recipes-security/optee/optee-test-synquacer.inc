@@ -1,3 +1,3 @@
 # TC0 specific configuration
 
-COMPATIBLE_MACHINE = "(ledge-synquacer?)"
+COMPATIBLE_MACHINE = "(synquacer?)"

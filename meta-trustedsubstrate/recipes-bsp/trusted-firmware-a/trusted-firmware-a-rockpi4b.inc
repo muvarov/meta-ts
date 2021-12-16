@@ -1,6 +1,6 @@
 # Rock Pi 4B 64-bit machines specific TFA support
 
-COMPATIBLE_MACHINE = "ledge-rockpi4b"
+COMPATIBLE_MACHINE = "rockpi4b"
 
 SRC_URI = "git://git.trustedfirmware.org/TF-A/trusted-firmware-a.git;protocol=https;name=tfa;branch=master"
 

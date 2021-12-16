@@ -1,6 +1,6 @@
 # Socionext Synquacer 64-bit machines specific TFA support
 
-COMPATIBLE_MACHINE = "ledge-synquacer"
+COMPATIBLE_MACHINE = "synquacer"
 
 SRC_URI = "git://git.trustedfirmware.org/TF-A/trusted-firmware-a.git;protocol=https;name=tfa;branch=master"
 

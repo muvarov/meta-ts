@@ -1,2 +1,2 @@
-COMPATIBLE_MACHINE:ledge-synquacer = "ledge-synquacer"
-COMPATIBLE_MACHINE:ledge-rockpi4b = "ledge-rockpi4b"
+COMPATIBLE_MACHINE:synquacer = "synquacer"
+COMPATIBLE_MACHINE:rockpi4b = "rockpi4b"

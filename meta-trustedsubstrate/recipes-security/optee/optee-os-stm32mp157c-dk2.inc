@@ -4,9 +4,9 @@ PV .= "+git${SRCREV}"
 
 DEPENDS += "python3-pycryptodomex-native"
 
-FILESEXTRAPATHS:prepend := "${THISDIR}/files/optee-os/ledge-stm32mp157c-dk2:"
+FILESEXTRAPATHS:prepend := "${THISDIR}/files/optee-os/stm32mp157c-dk2:"
 
-COMPATIBLE_MACHINE = "ledge-stm32mp157c-dk2"
+COMPATIBLE_MACHINE = "stm32mp157c-dk2"
 
 OPTEEMACHINE = "stm32mp1"
 OPTEEOUTPUTMACHINE = "stm32mp1"

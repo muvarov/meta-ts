@@ -41,9 +41,9 @@ Build
 
 2. Build one of supported targets:
 	- kas build ci/qemuarm64-secureboot.yml
-	- kas build ci/ledge-synquacer.yml
-	- kas build ci/ledge-stm32mp157c-dk2.yaml
-	- kas build ci/ledge-rockpi4b.yml
+	- kas build ci/synquacer.yml
+	- kas build ci/stm32mp157c-dk2.yaml
+	- kas build ci/rockpi4b.yml
 
 Reporting bugs
 --------------

@@ -7,7 +7,7 @@ SCP_PLATFORM  = "synquacer"
 FW_TARGETS = "scp"
 SCP_LOG_LEVEL = "WARN"
 
-COMPATIBLE_MACHINE:ledge-synquacer = "ledge-synquacer"
+COMPATIBLE_MACHINE:synquacer = "synquacer"
 
 ROMRAMFW_FILE = "scp_romramfw_${SCP_BUILD_STR}.bin"
 

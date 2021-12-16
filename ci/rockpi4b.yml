@@ -4,7 +4,7 @@ header:
     - base.yml
     - meta-openembedded.yml
 
-machine: ledge-synquacer
+machine: rockpi4b
 
 local_conf_header:
   bugs: |

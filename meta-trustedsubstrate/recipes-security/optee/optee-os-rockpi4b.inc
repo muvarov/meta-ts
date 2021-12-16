@@ -7,7 +7,7 @@ DEPENDS += "python3-pycryptodomex-native"
 
 FILESEXTRAPATHS:prepend := "${THISDIR}/files/optee-os/lede-rockpi4b:"
 
-COMPATIBLE_MACHINE = "ledge-rockpi4b"
+COMPATIBLE_MACHINE = "rockpi4b"
 
 OPTEEMACHINE = "rockchip"
 OPTEEOUTPUTMACHINE = "rockchip"

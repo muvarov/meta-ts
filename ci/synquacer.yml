@@ -4,7 +4,7 @@ header:
     - base.yml
     - meta-openembedded.yml
 
-machine: ledge-stm32mp157c-dk2
+machine: synquacer
 
 local_conf_header:
   bugs: |

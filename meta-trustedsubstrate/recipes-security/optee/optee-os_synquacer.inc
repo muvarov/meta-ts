@@ -9,7 +9,7 @@ FILESEXTRAPATHS:prepend := "${THISDIR}/files/optee-os/synquacer:"
 SRC_URI:append = " \
 		  file://0001-plat-synquacer-add-whole-DRAM-region-for-u-boot-supp.patch"
 
-COMPATIBLE_MACHINE = "ledge-synquacer"
+COMPATIBLE_MACHINE = "synquacer"
 
 OPTEEMACHINE = "synquacer"
 OPTEEOUTPUTMACHINE = "synquacer"
