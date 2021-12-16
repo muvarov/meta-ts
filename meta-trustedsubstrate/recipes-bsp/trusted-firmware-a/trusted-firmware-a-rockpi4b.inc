@@ -3,20 +3,16 @@
 COMPATIBLE_MACHINE = "rockpi4b"
 
 SRC_URI = "git://git.trustedfirmware.org/TF-A/trusted-firmware-a.git;protocol=https;name=tfa;branch=master"
-
-# TF-A master branch with all Corstone1000 patches merged
-# SRCREV_tfa = "c158878249f1bd930906ebd744b90d3f2a8265f1"
-
 SRCREV_tfa = "714ca37dc70ae933724ffe42770f06b0e3447728"
-PV .= "+git${SRCREV_tfa}"
-
 LIC_FILES_CHKSUM="file://docs/license.rst;md5=b2c740efedc159745b9b31f88ff03dde file://mbedtls/LICENSE;md5=3b83ef96387f14655fc854ddc3c6bd57"
+
+PV .= "+git${SRCREV_tfa}"
 
 FILESEXTRAPATHS:prepend := "${THISDIR}/files/rockpi4b:"
 
 
 TFA_DEBUG = "1"
-TFA_UBOOT = "1"
+TFA_UBOOT = "0"
 TFA_MBEDTLS = "1"
 TFA_BUILD_TARGET = "all"
 TFA_INSTALL_TARGET = "bl31"
@@ -30,7 +26,8 @@ TFA_SPD = "opteed"
 TFA_SPMD_SPM_AT_SEL2 = "0"
 
 # BL2 loads BL32 (optee). So, optee needs to be built first:
-DEPENDS += " optee-os virtual/bootloader gcc-arm-none-eabi-native"
+DEPENDS += " optee-os gcc-arm-none-eabi-native"
+DEPENDS:remove = "uboot"
 
 # EXTRA_OEMAKE:append = ' PRELOADED_BL33_BASE=0x08200000 SQ_USE_SCMI_DRIVER=1'
 

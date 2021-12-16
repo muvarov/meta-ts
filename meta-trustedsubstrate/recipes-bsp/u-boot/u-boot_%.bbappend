@@ -18,3 +18,11 @@ do_configure:prepend() {
 	cp ${WORKDIR}/ubootefi.var ${S}/
 }
 
+
+MACHINE_TFA_REQUIRE ?= ""
+
+MACHINE_TFA_REQUIRE:ledge-rockpi4b = "u-boot-ledge_rockpi4b.inc"
+ 
+require ${MACHINE_TFA_REQUIRE}
+
+
