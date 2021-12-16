@@ -10,7 +10,7 @@ SRC_URI:append:ledge-synquacer = " file://synquacer_developerbox_defconfig"
 SRC_URI:append:ledge-stm32mp157c-dk2 = " file://ledge_stm32mp157c_dk2_trusted_defconfig"
 COMPATIBLE_MACHINE:ledge-stm32mp157c-dk2 = "ledge-stm32mp157c-dk2"
 
-SRC_URI:append:ledge-rockpi4b = " file://lede_rockpi4b_defconfig"
+SRC_URI:append:ledge-rockpi4b = " file://ledge_rockpi4b_defconfig"
 COMPATIBLE_MACHINE:ledge-rockpi4b = "ledge-rockpi4b"
 
 do_configure:prepend() {

@@ -1,8 +1,5 @@
-# SRC_URI = "git://git.trustedfirmware.org/OP-TEE/optee_os.git;protocol=https;branch=master"
-# SRCREV = "d21befa5e53eae9db469eba1685f5aa5c6f92c2f"
-
-SRC_URI = "git://github.com/apalos/optee_os;protocol=https;branch=stmm_pr"
-SRCREV = "e8e990dc2e0e45cbab5a925c1cc29bc035b8ed47"
+SRC_URI = "git://git.trustedfirmware.org/OP-TEE/optee_os.git;protocol=https;branch=master"
+SRCREV = "d21befa5e53eae9db469eba1685f5aa5c6f92c2f"
 
 PV .= "+git${SRCREV}"
 
