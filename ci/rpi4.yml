@@ -4,7 +4,7 @@ header:
     - base.yml
     - meta-openembedded.yml
 
-machine: stm32mp157c-dk2
+machine: rpi4
 
 local_conf_header:
   bugs: |
@@ -12,4 +12,4 @@ local_conf_header:
     TEST_SUITES = "ping"
 
 target:
-  - trusted-firmware-a
+  - u-boot

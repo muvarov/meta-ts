@@ -44,6 +44,3 @@ local_conf_header:
     BB_SIGNATURE_HANDLER = "OEEquivHash"
 
 machine: unset
-
-target:
-  - trusted-firmware-a
