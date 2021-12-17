@@ -1,5 +1,7 @@
 # Generate Rockchip style loader binaries
 
+inherit deploy
+
 DEPENDS += "trusted-firmware-a"
 
 do_compile:prepend() {
@@ -7,10 +9,10 @@ do_compile:prepend() {
 	ls -l ${BL31}
 }
 
-do_install:append() {
+do_deploy:append() {
 	mkdir -p ${DEPLOYDIR}
-	install idbloader.img  ${DEPLOYDIR}/idbloader.img
-	install u-boot.itb ${DEPLOYDIR}/u-boot-${PV}.img
+	cp ${B}/rockpi4b_defconfig/idbloader.img  ${DEPLOYDIR}/idbloader.img
+	cp ${B}/rockpi4b_defconfig/u-boot.itb ${DEPLOYDIR}/u-boot.itb
 
 	cat > ${DEPLOYDIR}/README.flash << EOF
 	  - Write prefixed SPL at 64th sector

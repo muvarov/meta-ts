@@ -27,5 +27,3 @@ MACHINE_TFA_REQUIRE ?= ""
 MACHINE_TFA_REQUIRE:rockpi4b = "u-boot-rockpi4b.inc"
  
 require ${MACHINE_TFA_REQUIRE}
-
-
