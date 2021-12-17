@@ -14,7 +14,7 @@ SRC_URI:append:rockpi4b = " file://rockpi4b_defconfig"
 COMPATIBLE_MACHINE:rockpi4b = "rockpi4b"
 
 SRC_URI:append:rpi4 = " file://rpi4_defconfig"
-COMPATIBLE_MACHINE:rockpi4b = "rpi4"
+COMPATIBLE_MACHINE:rpi4 = "rpi4"
 
 do_configure:prepend() {
 	cp -r ${WORKDIR}/*_defconfig ${S}/configs/ || true
