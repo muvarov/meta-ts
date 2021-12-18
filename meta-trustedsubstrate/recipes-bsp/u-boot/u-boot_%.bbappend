@@ -25,5 +25,6 @@ do_configure:prepend() {
 MACHINE_TFA_REQUIRE ?= ""
 
 MACHINE_TFA_REQUIRE:rockpi4b = "u-boot-rockpi4b.inc"
+MACHINE_TFA_REQUIRE:rpi4 = "u-boot-rpi4.inc"
  
 require ${MACHINE_TFA_REQUIRE}
