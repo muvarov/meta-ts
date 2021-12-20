@@ -5,9 +5,9 @@ LIC_FILES_CHKSUM = "file://LICENCE.broadcom;md5=c403841ff2837657b2ed8e5bb474ac8d
 inherit deploy
 DEPENDS += " dtc-native"
 
-SRCREV="56f1b8bbc888ba9e527f4ef6b003f2d397987d48"
-SRC_URI = "https://github.com/raspberrypi/firmware/archive/${SRCREV}.tar.gz"
-SRC_URI[sha256sum] = "8359b7f640862810976490e11bbbda0dc44dfb8ba60beff866591bc6a68fca79"
+SRCREV="1.20210831"
+SRC_URI = "https://github.com/raspberrypi/firmware/archive/refs/tags/${SRCREV}.tar.gz"
+SRC_URI[sha256sum] = "47f879cd2b58cf556a9da95820af982d93929dfa4ff22488fc0bb271025c02ef"
 
 SRC_URI:append = " file://config.txt"
 SRC_URI:append = " file://tpm-soft-spi.dts"
