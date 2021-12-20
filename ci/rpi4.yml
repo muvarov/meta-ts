@@ -12,4 +12,4 @@ local_conf_header:
     TEST_SUITES = "ping"
 
 target:
-  - u-boot
+  - core-image-minimal
