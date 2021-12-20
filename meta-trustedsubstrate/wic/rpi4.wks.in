@@ -1,0 +1,4 @@
+# short-description: Create firmware disk image
+
+part firmware --source bootimg-partition --part-type 0xef00 --fstype=vfat --label firmware --active
+bootloader --ptable gpt
