@@ -45,6 +45,15 @@ Build
 	- kas build ci/stm32mp157c-dk2.yaml
 	- kas build ci/rockpi4b.yml
 
+Debugging
+---------
+
+- Set bitbake environment
+	kas shell ci/qemuarm64-secureboot.yml
+
+- Run qemu guest machine
+	runqemu core-image-minimal-qemuarm64-secureboot.qemuboot.conf wic serialstdio
+
 Reporting bugs
 --------------
 E-mail team-ledge@linaro.org with the error encountered and the steps
