@@ -2,19 +2,8 @@ FILESEXTRAPATHS:prepend := "${THISDIR}/${PN}:"
 
 SRC_URI:append = " file://ubootefi.var"
 
-SRC_URI:append:synquacer = " file://0001-synquacer-add-fTPM-support.patch"
-SRC_URI:append:synquacer = " file://0002-Revert-configs-synquacer-Make-U-Boot-binary-position.patch"
-SRC_URI:append:synquacer = " file://0003-configs-synquacer-Fix-dfu_alt_info-to-use-nor1.patch"
-SRC_URI:append:synquacer = " file://synquacer_developerbox_defconfig"
-
 SRC_URI:append:stm32mp157c-dk2 = " file://stm32mp157c_dk2_trusted_defconfig"
 COMPATIBLE_MACHINE:stm32mp157c-dk2 = "stm32mp157c-dk2"
-
-SRC_URI:append:rockpi4b = " file://rockpi4b_defconfig"
-COMPATIBLE_MACHINE:rockpi4b = "rockpi4b"
-
-SRC_URI:append:rpi4 = " file://rpi4_defconfig"
-COMPATIBLE_MACHINE:rpi4 = "rpi4"
 
 SRC_URI:append:qemuarm64-secureboot = " file://qemu_arm64_defconfig"
 
@@ -24,11 +13,12 @@ do_configure:prepend() {
 }
 
 
-MACHINE_TFA_REQUIRE ?= ""
+MACHINE_UBOOT_REQUIRE ?= ""
 
-MACHINE_TFA_REQUIRE:rockpi4b = "u-boot-rockpi4b.inc"
-MACHINE_TFA_REQUIRE:rpi4 = "u-boot-rpi4.inc"
- 
-require ${MACHINE_TFA_REQUIRE}
+MACHINE_UBOOT_REQUIRE:rockpi4b = "u-boot-rockpi4b.inc"
+MACHINE_UBOOT_REQUIRE:rpi4 = "u-boot-rpi4.inc"
+MACHINE_UBOOT_REQUIRE:synquacer = "u-boot-synquacer.inc"
+
+require ${MACHINE_UBOOT_REQUIRE}
 
 require u-boot-certs.inc

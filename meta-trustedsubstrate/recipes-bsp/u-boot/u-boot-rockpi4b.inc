@@ -1,6 +1,8 @@
 # Generate Rockchip style loader binaries
-
 inherit deploy
+
+SRC_URI:append = " file://rockpi4b_defconfig"
+COMPATIBLE_MACHINE = "rockpi4b"
 
 DEPENDS += "trusted-firmware-a"
 
