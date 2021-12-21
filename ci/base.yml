@@ -21,6 +21,7 @@ repos:
       meta-arm:
       meta-arm-bsp:
       meta-arm-toolchain:
+
 env:
   BB_LOGCONFIG: ""
   TOOLCHAIN_DIR: ""
