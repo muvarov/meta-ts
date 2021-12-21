@@ -1,4 +1,6 @@
 build
 meta-arm
 meta-openembedded
+meta-meta-openembedded
+meta-python
 poky
