@@ -16,6 +16,8 @@ COMPATIBLE_MACHINE:rockpi4b = "rockpi4b"
 SRC_URI:append:rpi4 = " file://rpi4_defconfig"
 COMPATIBLE_MACHINE:rpi4 = "rpi4"
 
+SRC_URI:append:qemuarm64-secureboot = " file://qemu_arm64_defconfig"
+
 do_configure:prepend() {
 	cp -r ${WORKDIR}/*_defconfig ${S}/configs/ || true
 	cp ${WORKDIR}/ubootefi.var ${S}/
