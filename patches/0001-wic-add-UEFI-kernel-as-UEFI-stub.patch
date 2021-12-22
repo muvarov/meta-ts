@@ -1,0 +1,70 @@
+From 8ca381ea4670912324bf4956e44699adb8b963fa Mon Sep 17 00:00:00 2001
+From: Richard Purdie <richard.purdie@linuxfoundation.org>
+Date: Thu, 6 May 2021 07:12:32 -1000
+Subject: [PATCH 1/2] wic: add UEFI kernel as UEFI stub
+
+Linux kernel can be compiled as UEFI stub and loaded directly
+with UEFI firmware without grub or other UEFI shell.
+
+Tested with wic file:
+bootloader  --ptable gpt --timeout=0  --append="rootwait"
+part /boot --source bootimg-efi --sourceparams="loader=kernel" \
+ --ondisk sda  --fstype=vfat --label bootfs \
+  --active --align 1024 --use-uuid
+part / --source rootfs --fstype=ext4 --label rootfs \
+  --align 1024 --exclude-path boot/ --use-label
+
+Signed-off-by: Maxim Uvarov <maxim.uvarov@linaro.org>
+---
+
+ Upstream-status: sent, not accepted.
+
+ scripts/lib/wic/plugins/source/bootimg-efi.py | 25 +++++++++++++++++++
+ 1 file changed, 25 insertions(+)
+
+diff --git a/scripts/lib/wic/plugins/source/bootimg-efi.py b/scripts/lib/wic/plugins/source/bootimg-efi.py
+index 0391aebdc8..b0b4dc5f36 100644
+--- a/scripts/lib/wic/plugins/source/bootimg-efi.py
++++ b/scripts/lib/wic/plugins/source/bootimg-efi.py
+@@ -210,6 +210,8 @@ class BootimgEFIPlugin(SourcePlugin):
+                 cls.do_configure_grubefi(hdddir, creator, cr_workdir, source_params)
+             elif source_params['loader'] == 'systemd-boot':
+                 cls.do_configure_systemdboot(hdddir, creator, cr_workdir, source_params)
++            elif source_params['loader'] == 'kernel':
++                return
+             else:
+                 raise WicError("unrecognized bootimg-efi loader: %s" % source_params['loader'])
+         except KeyError:
+@@ -366,6 +368,29 @@ class BootimgEFIPlugin(SourcePlugin):
+                 for mod in [x for x in os.listdir(kernel_dir) if x.startswith("systemd-")]:
+                     cp_cmd = "cp %s/%s %s/EFI/BOOT/%s" % (kernel_dir, mod, hdddir, mod[8:])
+                     exec_cmd(cp_cmd, True)
++            elif source_params['loader'] == 'kernel':
++                kernel = get_bitbake_var("KERNEL_IMAGETYPE")
++                if not kernel:
++                    raise WicError("Empty KERNEL_IMAGETYPE %s\n" % target)
++                target = get_bitbake_var("TARGET_SYS")
++                if not target:
++                    raise WicError("Unknown arch (TARGET_SYS) %s\n" % target)
++
++                if re.match("x86_64", target):
++                    kernel_efi_image = "bootx64.efi"
++                elif re.match('i.86', target):
++                    kernel_efi_image = "bootia32.efi"
++                elif re.match('aarch64', target):
++                    kernel_efi_image = "bootaa64.efi"
++                elif re.match('arm', target):
++                    kernel_efi_image = "bootarm.efi"
++                else:
++                    raise WicError("kernel efi is incompatible with target %s" % target)
++
++                for mod in [x for x in os.listdir(kernel_dir) if x.startswith(kernel)]:
++                    cp_cmd = "cp %s/%s %s/EFI/BOOT/%s" % (kernel_dir, mod, hdddir, kernel_efi_image)
++                    WicError("cp_cmd = %s" % cp_cmd);
++                    exec_cmd(cp_cmd, True)
+             else:
+                 raise WicError("unrecognized bootimg-efi loader: %s" %
+                                source_params['loader'])
+-- 
+2.17.1
+
