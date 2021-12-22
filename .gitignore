@@ -3,4 +3,5 @@ meta-arm
 meta-openembedded
 meta-meta-openembedded
 meta-python
+meta-secure-core
 poky

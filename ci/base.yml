@@ -22,13 +22,18 @@ repos:
       p2:
         repo : poky
         path : ../patches/0002-wic-bootimg-efi-implement-include-path.patch
-
   meta-arm:
     url: git://git.yoctoproject.org/meta-arm
     layers:
       meta-arm:
       meta-arm-bsp:
       meta-arm-toolchain:
+  meta-secure-core:
+    url: https://github.com/jiazhang0/meta-secure-core
+    layers:
+      meta:
+      meta-efi-secure-boot:
+      meta-signing-key:
 
 env:
   BB_LOGCONFIG: ""
