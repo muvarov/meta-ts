@@ -2,7 +2,7 @@ SRC_URI = "git://git.trustedfirmware.org/OP-TEE/optee_os.git;protocol=https;bran
 SRCREV = "d21befa5e53eae9db469eba1685f5aa5c6f92c2f"
 PV .= "+git${SRCREV}"
 
-DEPENDS += "python3-pycryptodomex-native"
+DEPENDS += "python3-pycryptodomex-native edk2-firmware"
 
 FILESEXTRAPATHS:prepend := "${THISDIR}/files/optee-os/synquacer:"
 
@@ -15,7 +15,8 @@ OPTEEMACHINE = "synquacer"
 OPTEEOUTPUTMACHINE = "synquacer"
 
 # Enable optee memory layout and boot logs
-EXTRA_OEMAKE += " CFG_TEE_CORE_LOG_LEVEL=4"
+# EXTRA_OEMAKE += " CFG_TEE_CORE_LOG_LEVEL=4"
+EXTRA_OEMAKE += " CFG_TEE_CORE_LOG_LEVEL=1"
 
 # default disable latency benchmarks (over all OP-TEE layers)
 EXTRA_OEMAKE += " CFG_TEE_BENCHMARK=n"
@@ -26,3 +27,6 @@ EXTRA_OEMAKE += ' CFG_REE_FS=n CFG_CORE_ARM64_PA_BITS=48 CFG_SCTLR_ALIGNMENT_CHE
 
 EXTRA_OEMAKE += " HOST_PREFIX=${HOST_PREFIX}"
 EXTRA_OEMAKE += " CROSS_COMPILE64=${HOST_PREFIX}"
+
+# Include StandAloneMM
+EXTRA_OEMAKE += " CFG_STMM_PATH=${DEPLOY_DIR_IMAGE}/uefi.bin "
