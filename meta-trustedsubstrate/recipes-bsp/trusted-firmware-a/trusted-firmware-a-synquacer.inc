@@ -43,7 +43,7 @@ EXTRA_OEMAKE:append = " \
                         TRUSTED_BOARD_BOOT=1 \
                         ARM_ROTPK_LOCATION=devel_rsa  \
                         BL32=${RECIPE_SYSROOT}/lib/firmware/tee-pager_v2.bin \
-                        LOG_LEVEL=50 \
+                        LOG_LEVEL=30 \
 			"
 do_deploy:append() {
     echo "deploy synquacer"
