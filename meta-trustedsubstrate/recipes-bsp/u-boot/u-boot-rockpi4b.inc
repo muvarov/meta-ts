@@ -4,6 +4,7 @@ inherit deploy
 SRCREV = "734ad933766f0dbbeafe1b27211686940a5e6d16"
 
 SRC_URI:append = " file://rockpi4b_defconfig"
+SRC_URI:append = " file://0004-phy-rockchip-inno-usb2-fix-hang-when-multiple-controllers-exit.patch"
 COMPATIBLE_MACHINE = "rockpi4b"
 
 DEPENDS += "trusted-firmware-a"
