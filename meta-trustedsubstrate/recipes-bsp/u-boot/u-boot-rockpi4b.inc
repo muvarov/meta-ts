@@ -22,7 +22,7 @@ do_deploy:append() {
 
 	cat > ${DEPLOYDIR}/README.flash << EOF
 	  - Write prefixed SPL at 64th sector
-    	  => sudo dd if=idblock.img of=/dev/sdc seek=64
+    	  => sudo dd if=idbloader.img of=/dev/sdc seek=64
 
   	  - Write U-Boot proper at 16384 sector
    	  => sudo dd if=u-boot.itb of=/dev/sdc seek=16384
