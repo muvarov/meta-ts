@@ -1,0 +1,26 @@
+From 16b0314a05f783c9eb254e0f872b3e654ee8ad78 Mon Sep 17 00:00:00 2001
+From: Maxim Uvarov <maxim.uvarov@linaro.org>
+Date: Wed, 12 Jan 2022 15:56:35 +0000
+Subject: [PATCH] rkk3399: use default uart speed
+
+Signed-off-by: Maxim Uvarov <maxim.uvarov@linaro.org>
+---
+ plat/rockchip/rk3399/rk3399_def.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/plat/rockchip/rk3399/rk3399_def.h b/plat/rockchip/rk3399/rk3399_def.h
+index ba83242eb..8d6ecfbe6 100644
+--- a/plat/rockchip/rk3399/rk3399_def.h
++++ b/plat/rockchip/rk3399/rk3399_def.h
+@@ -17,7 +17,7 @@
+ /**************************************************************************
+  * UART related constants
+  **************************************************************************/
+-#define RK3399_BAUDRATE			115200
++#define RK3399_BAUDRATE			1500000
+ #define RK3399_UART_CLOCK		24000000
+ 
+ /******************************************************************************
+-- 
+2.17.1
+
