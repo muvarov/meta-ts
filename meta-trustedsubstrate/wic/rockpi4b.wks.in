@@ -1,5 +1,28 @@
+# Copyright (C) 2019,2020 Garmin Ltd. or its subsidiaries
+# Copyright (C) 2021 Trevor Woerner
+# Released under the MIT license (see COPYING.MIT for the terms)
+#
+# Disk layout
+# Note that the reference documentation refers to 512 byte disk sectors, but
+# wic uses 1KB blocks
+#
+#   Partition   Start Sector    Number of Sectors
+#   loader1     64              8000
+#   reserved1   8064            128
+#   reserved2   8192            8192
+#   loader2     16384           8192
+#   atf         24576           8192
+#   boot        32768           229376
+#   root        262144          -           (suggested)
+
 bootloader --ptable gpt
-part --source rawcopy --sourceparams="file=idbloader.img" --align 32 --no-table
-part --source rawcopy --sourceparams="file=u-boot.itb" --part-name uboot --align 8192
-part /boot --fstype=vfat --label bootfs --active --align 4 --uuid 00112233-1234-1111-2222-000123456789 --use-label --part-name="ESP" --part-type 0xef00 --fixed-size 128M
-part /  --fstype=ext4 --label rootfs --align 4 --fsuuid 6091b3a4-ce08-3020-93a6-f755a22ef03b  --use-label --fixed-size 4096M
+part loader1    --offset 32     --fixed-size 4000K --source rawcopy --sourceparams="file=${SPL_BINARY}"
+part reserved1  --offset 4032   --fixed-size 64K
+part reserved2  --offset 4096   --fixed-size 4096K
+part loader2    --offset 8192   --fixed-size 4096K --source rawcopy --sourceparams="file=u-boot.${UBOOT_SUFFIX}"
+part atf        --offset 12288  --fixed-size 4096K
+#part /boot     --offset 16384  --size  114688K --active --source bootimg-partition --fstype=vfat --label boot --use-uuid --sourceparams="loader=u-boot"
+part /boot      --offset 16384  --source bootimg-efi --sourceparams="loader=kernel" --fstype=vfat --label bootfs --active --align 4  --uuid 00112233-1234-1111-2222-000123456789 --use-label --part-name="ESP" --part-type 0xef00 --fixed-size 128M
+
+part /boot-efi --fstype=vfat --label bootfs --active --align 4 --uuid 00112233-1234-1111-2222-000123456789 --use-label --part-name="ESP" --part-type 0xef00 --fixed-size 128M
+# part /  --fstype=ext4 --label rootfs --align 4 --fsuuid 6091b3a4-ce08-3020-93a6-f755a22ef03b  --use-label --fixed-size 4096M
