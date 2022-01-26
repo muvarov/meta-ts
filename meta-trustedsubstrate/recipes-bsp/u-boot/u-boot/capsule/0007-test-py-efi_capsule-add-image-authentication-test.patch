@@ -1,0 +1,397 @@
+From fafb2b3d8600a8837659cd4ef1fd8a9dc3320707 Mon Sep 17 00:00:00 2001
+From: AKASHI Takahiro <takahiro.akashi@linaro.org>
+Date: Tue, 18 Jan 2022 13:39:50 +0900
+Subject: [PATCH 07/11] test/py: efi_capsule: add image authentication test
+
+Add a couple of test cases against capsule image authentication
+for capsule-on-disk, where only a signed capsule file with the verified
+signature will be applied to the system.
+
+Due to the difficulty of embedding a public key (esl file) in U-Boot
+binary during pytest setup time, all the keys/certificates are pre-created.
+
+Signed-off-by: AKASHI Takahiro <takahiro.akashi@linaro.org>
+Reviewed-by: Simon Glass <sjg@chromium.org>
+Acked-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
+---
+ .../py/tests/test_efi_capsule/capsule_defs.py |   5 +
+ test/py/tests/test_efi_capsule/conftest.py    |  52 +++-
+ test/py/tests/test_efi_capsule/signature.dts  |  10 +
+ .../test_capsule_firmware_signed.py           | 254 ++++++++++++++++++
+ 4 files changed, 318 insertions(+), 3 deletions(-)
+ create mode 100644 test/py/tests/test_efi_capsule/signature.dts
+ create mode 100644 test/py/tests/test_efi_capsule/test_capsule_firmware_signed.py
+
+diff --git a/test/py/tests/test_efi_capsule/capsule_defs.py b/test/py/tests/test_efi_capsule/capsule_defs.py
+index 4fd6353c20..59b40f11bd 100644
+--- a/test/py/tests/test_efi_capsule/capsule_defs.py
++++ b/test/py/tests/test_efi_capsule/capsule_defs.py
+@@ -3,3 +3,8 @@
+ # Directories
+ CAPSULE_DATA_DIR = '/EFI/CapsuleTestData'
+ CAPSULE_INSTALL_DIR = '/EFI/UpdateCapsule'
++
++# v1.5.1 or earlier of efitools has a bug in sha256 calculation, and
++# you need build a newer version on your own.
++# The path must terminate with '/' if it is not null.
++EFITOOLS_PATH = ''
+diff --git a/test/py/tests/test_efi_capsule/conftest.py b/test/py/tests/test_efi_capsule/conftest.py
+index 6ad5608cd7..27c05971ca 100644
+--- a/test/py/tests/test_efi_capsule/conftest.py
++++ b/test/py/tests/test_efi_capsule/conftest.py
+@@ -10,13 +10,13 @@ import pytest
+ from capsule_defs import *
+ 
+ #
+-# Fixture for UEFI secure boot test
++# Fixture for UEFI capsule test
+ #
+ 
+-
+ @pytest.fixture(scope='session')
+ def efi_capsule_data(request, u_boot_config):
+-    """Set up a file system to be used in UEFI capsule test.
++    """Set up a file system to be used in UEFI capsule and
++       authentication test.
+ 
+     Args:
+         request: Pytest request object.
+@@ -40,6 +40,36 @@ def efi_capsule_data(request, u_boot_config):
+         check_call('mkdir -p %s' % data_dir, shell=True)
+         check_call('mkdir -p %s' % install_dir, shell=True)
+ 
++        capsule_auth_enabled = u_boot_config.buildconfig.get(
++                    'config_efi_capsule_authenticate')
++        if capsule_auth_enabled:
++            # Create private key (SIGNER.key) and certificate (SIGNER.crt)
++            check_call('cd %s; '
++                       'openssl req -x509 -sha256 -newkey rsa:2048 '
++                            '-subj /CN=TEST_SIGNER/ -keyout SIGNER.key '
++                            '-out SIGNER.crt -nodes -days 365'
++                       % data_dir, shell=True)
++            check_call('cd %s; %scert-to-efi-sig-list SIGNER.crt SIGNER.esl'
++                       % (data_dir, EFITOOLS_PATH), shell=True)
++
++            # Update dtb adding capsule certificate
++            check_call('cd %s; '
++                       'cp %s/test/py/tests/test_efi_capsule/signature.dts .'
++                       % (data_dir, u_boot_config.source_dir), shell=True)
++            check_call('cd %s; '
++                       'dtc -@ -I dts -O dtb -o signature.dtbo signature.dts; '
++                       'fdtoverlay -i %s/arch/sandbox/dts/test.dtb '
++                            '-o test_sig.dtb signature.dtbo'
++                       % (data_dir, u_boot_config.build_dir), shell=True)
++
++            # Create *malicious* private key (SIGNER2.key) and certificate
++            # (SIGNER2.crt)
++            check_call('cd %s; '
++                       'openssl req -x509 -sha256 -newkey rsa:2048 '
++                            '-subj /CN=TEST_SIGNER/ -keyout SIGNER2.key '
++                            '-out SIGNER2.crt -nodes -days 365'
++                       % data_dir, shell=True)
++
+         # Create capsule files
+         # two regions: one for u-boot.bin and the other for u-boot.env
+         check_call('cd %s; echo -n u-boot:Old > u-boot.bin.old; echo -n u-boot:New > u-boot.bin.new; echo -n u-boot-env:Old -> u-boot.env.old; echo -n u-boot-env:New > u-boot.env.new' % data_dir,
+@@ -56,6 +86,22 @@ def efi_capsule_data(request, u_boot_config):
+         check_call('cd %s; %s/tools/mkeficapsule --raw u-boot.bin.new --index 1 Test02' %
+                    (data_dir, u_boot_config.build_dir),
+                    shell=True)
++        if capsule_auth_enabled:
++            # firmware signed with proper key
++            check_call('cd %s; '
++                       '%s/tools/mkeficapsule --index 1 --monotonic-count 1 '
++                            '--private-key SIGNER.key --certificate SIGNER.crt '
++                            '--raw u-boot.bin.new Test11'
++                       % (data_dir, u_boot_config.build_dir),
++                       shell=True)
++            # firmware signed with *mal* key
++            check_call('cd %s; '
++                       '%s/tools/mkeficapsule --index 1 --monotonic-count 1 '
++                            '--private-key SIGNER2.key '
++                            '--certificate SIGNER2.crt '
++                            '--raw u-boot.bin.new Test12'
++                       % (data_dir, u_boot_config.build_dir),
++                       shell=True)
+ 
+         # Create a disk image with EFI system partition
+         check_call('virt-make-fs --partition=gpt --size=+1M --type=vfat %s %s' %
+diff --git a/test/py/tests/test_efi_capsule/signature.dts b/test/py/tests/test_efi_capsule/signature.dts
+new file mode 100644
+index 0000000000..078cfc76c9
+--- /dev/null
++++ b/test/py/tests/test_efi_capsule/signature.dts
+@@ -0,0 +1,10 @@
++// SPDX-License-Identifier: GPL-2.0+
++
++/dts-v1/;
++/plugin/;
++
++&{/} {
++	signature {
++		capsule-key = /incbin/("SIGNER.esl");
++	};
++};
+diff --git a/test/py/tests/test_efi_capsule/test_capsule_firmware_signed.py b/test/py/tests/test_efi_capsule/test_capsule_firmware_signed.py
+new file mode 100644
+index 0000000000..593b032e90
+--- /dev/null
++++ b/test/py/tests/test_efi_capsule/test_capsule_firmware_signed.py
+@@ -0,0 +1,254 @@
++# SPDX-License-Identifier:      GPL-2.0+
++# Copyright (c) 2021, Linaro Limited
++# Author: AKASHI Takahiro <takahiro.akashi@linaro.org>
++#
++# U-Boot UEFI: Firmware Update (Signed capsule) Test
++
++"""
++This test verifies capsule-on-disk firmware update
++with signed capsule files
++"""
++
++import pytest
++from capsule_defs import CAPSULE_DATA_DIR, CAPSULE_INSTALL_DIR
++
++@pytest.mark.boardspec('sandbox')
++@pytest.mark.buildconfigspec('efi_capsule_firmware_raw')
++@pytest.mark.buildconfigspec('efi_capsule_authenticate')
++@pytest.mark.buildconfigspec('dfu')
++@pytest.mark.buildconfigspec('dfu_sf')
++@pytest.mark.buildconfigspec('cmd_efidebug')
++@pytest.mark.buildconfigspec('cmd_fat')
++@pytest.mark.buildconfigspec('cmd_memory')
++@pytest.mark.buildconfigspec('cmd_nvedit_efi')
++@pytest.mark.buildconfigspec('cmd_sf')
++@pytest.mark.slow
++class TestEfiCapsuleFirmwareSigned(object):
++    def test_efi_capsule_auth1(
++            self, u_boot_config, u_boot_console, efi_capsule_data):
++        """
++        Test Case 1 - Update U-Boot on SPI Flash, raw image format
++                      0x100000-0x150000: U-Boot binary (but dummy)
++
++                      If the capsule is properly signed, the authentication
++                      should pass and the firmware be updated.
++        """
++        disk_img = efi_capsule_data
++        with u_boot_console.log.section('Test Case 1-a, before reboot'):
++            output = u_boot_console.run_command_list([
++                'host bind 0 %s' % disk_img,
++                'efidebug boot add -b 1 TEST host 0:1 /helloworld.efi',
++                'efidebug boot order 1',
++                'env set -e -nv -bs -rt OsIndications =0x0000000000000004',
++                'env set dfu_alt_info '
++                        '"sf 0:0=u-boot-bin raw 0x100000 '
++                        '0x50000;u-boot-env raw 0x150000 0x200000"',
++                'env save'])
++
++            # initialize content
++            output = u_boot_console.run_command_list([
++                'sf probe 0:0',
++                'fatload host 0:1 4000000 %s/u-boot.bin.old'
++                        % CAPSULE_DATA_DIR,
++                'sf write 4000000 100000 10',
++                'sf read 5000000 100000 10',
++                'md.b 5000000 10'])
++            assert 'Old' in ''.join(output)
++
++            # place a capsule file
++            output = u_boot_console.run_command_list([
++                'fatload host 0:1 4000000 %s/Test11' % CAPSULE_DATA_DIR,
++                'fatwrite host 0:1 4000000 %s/Test11 $filesize'
++                        % CAPSULE_INSTALL_DIR,
++                'fatls host 0:1 %s' % CAPSULE_INSTALL_DIR])
++            assert 'Test11' in ''.join(output)
++
++        # reboot
++        mnt_point = u_boot_config.persistent_data_dir + '/test_efi_capsule'
++        u_boot_console.config.dtb = mnt_point + CAPSULE_DATA_DIR \
++                                    + '/test_sig.dtb'
++        u_boot_console.restart_uboot()
++
++        capsule_early = u_boot_config.buildconfig.get(
++            'config_efi_capsule_on_disk_early')
++        with u_boot_console.log.section('Test Case 1-b, after reboot'):
++            if not capsule_early:
++                # make sure that dfu_alt_info exists even persistent variables
++                # are not available.
++                output = u_boot_console.run_command_list([
++                    'env set dfu_alt_info '
++                            '"sf 0:0=u-boot-bin raw 0x100000 '
++                            '0x50000;u-boot-env raw 0x150000 0x200000"',
++                    'host bind 0 %s' % disk_img,
++                    'fatls host 0:1 %s' % CAPSULE_INSTALL_DIR])
++                assert 'Test11' in ''.join(output)
++
++                # need to run uefi command to initiate capsule handling
++                output = u_boot_console.run_command(
++                    'env print -e Capsule0000')
++
++            output = u_boot_console.run_command_list([
++                'host bind 0 %s' % disk_img,
++                'fatls host 0:1 %s' % CAPSULE_INSTALL_DIR])
++            assert 'Test11' not in ''.join(output)
++
++            output = u_boot_console.run_command_list([
++                'sf probe 0:0',
++                'sf read 4000000 100000 10',
++                'md.b 4000000 10'])
++            assert 'u-boot:New' in ''.join(output)
++
++    def test_efi_capsule_auth2(
++            self, u_boot_config, u_boot_console, efi_capsule_data):
++        """
++        Test Case 2 - Update U-Boot on SPI Flash, raw image format
++                      0x100000-0x150000: U-Boot binary (but dummy)
++
++                      If the capsule is signed but with an invalid key,
++                      the authentication should fail and the firmware
++                      not be updated.
++        """
++        disk_img = efi_capsule_data
++        with u_boot_console.log.section('Test Case 2-a, before reboot'):
++            output = u_boot_console.run_command_list([
++                'host bind 0 %s' % disk_img,
++                'efidebug boot add -b 1 TEST host 0:1 /helloworld.efi',
++                'efidebug boot order 1',
++                'env set -e -nv -bs -rt OsIndications =0x0000000000000004',
++                'env set dfu_alt_info '
++                        '"sf 0:0=u-boot-bin raw 0x100000 '
++                        '0x50000;u-boot-env raw 0x150000 0x200000"',
++                'env save'])
++
++            # initialize content
++            output = u_boot_console.run_command_list([
++                'sf probe 0:0',
++                'fatload host 0:1 4000000 %s/u-boot.bin.old'
++                        % CAPSULE_DATA_DIR,
++                'sf write 4000000 100000 10',
++                'sf read 5000000 100000 10',
++                'md.b 5000000 10'])
++            assert 'Old' in ''.join(output)
++
++            # place a capsule file
++            output = u_boot_console.run_command_list([
++                'fatload host 0:1 4000000 %s/Test12' % CAPSULE_DATA_DIR,
++                'fatwrite host 0:1 4000000 %s/Test12 $filesize'
++                                % CAPSULE_INSTALL_DIR,
++                'fatls host 0:1 %s' % CAPSULE_INSTALL_DIR])
++            assert 'Test12' in ''.join(output)
++
++        # reboot
++        mnt_point = u_boot_config.persistent_data_dir + '/test_efi_capsule'
++        u_boot_console.config.dtb = mnt_point + CAPSULE_DATA_DIR \
++                                    + '/test_sig.dtb'
++        u_boot_console.restart_uboot()
++
++        capsule_early = u_boot_config.buildconfig.get(
++            'config_efi_capsule_on_disk_early')
++        with u_boot_console.log.section('Test Case 2-b, after reboot'):
++            if not capsule_early:
++                # make sure that dfu_alt_info exists even persistent variables
++                # are not available.
++                output = u_boot_console.run_command_list([
++                    'env set dfu_alt_info '
++                        '"sf 0:0=u-boot-bin raw 0x100000 '
++                        '0x50000;u-boot-env raw 0x150000 0x200000"',
++                    'host bind 0 %s' % disk_img,
++                    'fatls host 0:1 %s' % CAPSULE_INSTALL_DIR])
++                assert 'Test12' in ''.join(output)
++
++                # need to run uefi command to initiate capsule handling
++                output = u_boot_console.run_command(
++                    'env print -e Capsule0000')
++
++            # deleted any way
++            output = u_boot_console.run_command_list([
++                'host bind 0 %s' % disk_img,
++                'fatls host 0:1 %s' % CAPSULE_INSTALL_DIR])
++            assert 'Test12' not in ''.join(output)
++
++            # TODO: check CapsuleStatus in CapsuleXXXX
++
++            output = u_boot_console.run_command_list([
++                'sf probe 0:0',
++                'sf read 4000000 100000 10',
++                'md.b 4000000 10'])
++            assert 'u-boot:Old' in ''.join(output)
++
++    def test_efi_capsule_auth3(
++            self, u_boot_config, u_boot_console, efi_capsule_data):
++        """
++        Test Case 3 - Update U-Boot on SPI Flash, raw image format
++                      0x100000-0x150000: U-Boot binary (but dummy)
++
++                      If the capsule is not signed, the authentication
++                      should fail and the firmware not be updated.
++        """
++        disk_img = efi_capsule_data
++        with u_boot_console.log.section('Test Case 3-a, before reboot'):
++            output = u_boot_console.run_command_list([
++                'host bind 0 %s' % disk_img,
++                'efidebug boot add -b 1 TEST host 0:1 /helloworld.efi',
++                'efidebug boot order 1',
++                'env set -e -nv -bs -rt OsIndications =0x0000000000000004',
++                'env set dfu_alt_info '
++                        '"sf 0:0=u-boot-bin raw 0x100000 '
++                        '0x50000;u-boot-env raw 0x150000 0x200000"',
++                'env save'])
++
++            # initialize content
++            output = u_boot_console.run_command_list([
++                'sf probe 0:0',
++                'fatload host 0:1 4000000 %s/u-boot.bin.old'
++                        % CAPSULE_DATA_DIR,
++                'sf write 4000000 100000 10',
++                'sf read 5000000 100000 10',
++                'md.b 5000000 10'])
++            assert 'Old' in ''.join(output)
++
++            # place a capsule file
++            output = u_boot_console.run_command_list([
++                'fatload host 0:1 4000000 %s/Test02' % CAPSULE_DATA_DIR,
++                'fatwrite host 0:1 4000000 %s/Test02 $filesize'
++                            % CAPSULE_INSTALL_DIR,
++                'fatls host 0:1 %s' % CAPSULE_INSTALL_DIR])
++            assert 'Test02' in ''.join(output)
++
++        # reboot
++        mnt_point = u_boot_config.persistent_data_dir + '/test_efi_capsule'
++        u_boot_console.config.dtb = mnt_point + CAPSULE_DATA_DIR \
++                                    + '/test_sig.dtb'
++        u_boot_console.restart_uboot()
++
++        capsule_early = u_boot_config.buildconfig.get(
++            'config_efi_capsule_on_disk_early')
++        with u_boot_console.log.section('Test Case 3-b, after reboot'):
++            if not capsule_early:
++                # make sure that dfu_alt_info exists even persistent variables
++                # are not available.
++                output = u_boot_console.run_command_list([
++                    'env set dfu_alt_info '
++                            '"sf 0:0=u-boot-bin raw 0x100000 '
++                            '0x50000;u-boot-env raw 0x150000 0x200000"',
++                    'host bind 0 %s' % disk_img,
++                    'fatls host 0:1 %s' % CAPSULE_INSTALL_DIR])
++                assert 'Test02' in ''.join(output)
++
++                # need to run uefi command to initiate capsule handling
++                output = u_boot_console.run_command(
++                    'env print -e Capsule0000')
++
++            # deleted any way
++            output = u_boot_console.run_command_list([
++                'host bind 0 %s' % disk_img,
++                'fatls host 0:1 %s' % CAPSULE_INSTALL_DIR])
++            assert 'Test02' not in ''.join(output)
++
++            # TODO: check CapsuleStatus in CapsuleXXXX
++
++            output = u_boot_console.run_command_list([
++                'sf probe 0:0',
++                'sf read 4000000 100000 10',
++                'md.b 4000000 10'])
++            assert 'u-boot:Old' in ''.join(output)
+-- 
+2.17.1
+

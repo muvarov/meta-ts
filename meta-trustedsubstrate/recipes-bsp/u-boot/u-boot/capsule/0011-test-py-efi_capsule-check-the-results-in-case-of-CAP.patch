@@ -1,0 +1,93 @@
+From 9fba06224b3e8cd8da529e8770832ca7db7e6d08 Mon Sep 17 00:00:00 2001
+From: AKASHI Takahiro <takahiro.akashi@linaro.org>
+Date: Tue, 18 Jan 2022 13:39:54 +0900
+Subject: [PATCH 11/11] test/py: efi_capsule: check the results in case of
+ CAPSULE_AUTHENTICATE
+
+Before the capsule authentication is supported, this test script works
+correctly, but with the feature enabled, most tests will fail due to
+unsigned capsules.
+So check the results depending on CAPSULE_AUTHENTICATE or not.
+
+Signed-off-by: AKASHI Takahiro <takahiro.akashi@linaro.org>
+Reviewed-by: Simon Glass <sjg@chromium.org>
+---
+ .../test_efi_capsule/test_capsule_firmware.py | 26 ++++++++++++++++---
+ 1 file changed, 22 insertions(+), 4 deletions(-)
+
+diff --git a/test/py/tests/test_efi_capsule/test_capsule_firmware.py b/test/py/tests/test_efi_capsule/test_capsule_firmware.py
+index 9cc973560f..6e803f699f 100644
+--- a/test/py/tests/test_efi_capsule/test_capsule_firmware.py
++++ b/test/py/tests/test_efi_capsule/test_capsule_firmware.py
+@@ -148,6 +148,8 @@ class TestEfiCapsuleFirmwareFit(object):
+ 
+         capsule_early = u_boot_config.buildconfig.get(
+             'config_efi_capsule_on_disk_early')
++        capsule_auth = u_boot_config.buildconfig.get(
++            'config_efi_capsule_authenticate')
+         with u_boot_console.log.section('Test Case 2-b, after reboot'):
+             if not capsule_early:
+                 # make sure that dfu_alt_info exists even persistent variables
+@@ -171,12 +173,18 @@ class TestEfiCapsuleFirmwareFit(object):
+                 'sf probe 0:0',
+                 'sf read 4000000 100000 10',
+                 'md.b 4000000 10'])
+-            assert 'u-boot:New' in ''.join(output)
++            if capsule_auth:
++                assert 'u-boot:Old' in ''.join(output)
++            else:
++                assert 'u-boot:New' in ''.join(output)
+ 
+             output = u_boot_console.run_command_list([
+                 'sf read 4000000 150000 10',
+                 'md.b 4000000 10'])
+-            assert 'u-boot-env:New' in ''.join(output)
++            if capsule_auth:
++                assert 'u-boot-env:Old' in ''.join(output)
++            else:
++                assert 'u-boot-env:New' in ''.join(output)
+ 
+     def test_efi_capsule_fw3(
+             self, u_boot_config, u_boot_console, efi_capsule_data):
+@@ -215,6 +223,8 @@ class TestEfiCapsuleFirmwareFit(object):
+ 
+         capsule_early = u_boot_config.buildconfig.get(
+             'config_efi_capsule_on_disk_early')
++        capsule_auth = u_boot_config.buildconfig.get(
++            'config_efi_capsule_authenticate')
+         with u_boot_console.log.section('Test Case 3-b, after reboot'):
+             if not capsule_early:
+                 # make sure that dfu_alt_info exists even persistent variables
+@@ -246,7 +256,10 @@ class TestEfiCapsuleFirmwareFit(object):
+                 'sf probe 0:0',
+                 'sf read 4000000 100000 10',
+                 'md.b 4000000 10'])
+-            assert 'u-boot:New' in ''.join(output)
++            if capsule_auth:
++                assert 'u-boot:Old' in ''.join(output)
++            else:
++                assert 'u-boot:New' in ''.join(output)
+ 
+     def test_efi_capsule_fw4(
+             self, u_boot_config, u_boot_console, efi_capsule_data):
+@@ -285,6 +298,8 @@ class TestEfiCapsuleFirmwareFit(object):
+ 
+         capsule_early = u_boot_config.buildconfig.get(
+             'config_efi_capsule_on_disk_early')
++        capsule_auth = u_boot_config.buildconfig.get(
++            'config_efi_capsule_authenticate')
+         with u_boot_console.log.section('Test Case 4-b, after reboot'):
+             if not capsule_early:
+                 # make sure that dfu_alt_info exists even persistent variables
+@@ -313,4 +328,7 @@ class TestEfiCapsuleFirmwareFit(object):
+                 'sf probe 0:0',
+                 'sf read 4000000 100000 10',
+                 'md.b 4000000 10'])
+-            assert 'u-boot:New' in ''.join(output)
++            if capsule_auth:
++                assert 'u-boot:Old' in ''.join(output)
++            else:
++                assert 'u-boot:New' in ''.join(output)
+-- 
+2.17.1
+

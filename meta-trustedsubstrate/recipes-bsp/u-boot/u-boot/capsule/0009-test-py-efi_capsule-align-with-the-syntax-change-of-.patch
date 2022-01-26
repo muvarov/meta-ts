@@ -1,0 +1,35 @@
+From 3f8c9f1d3fc4105a5cb6a61604bb4f7c2c37f318 Mon Sep 17 00:00:00 2001
+From: AKASHI Takahiro <takahiro.akashi@linaro.org>
+Date: Tue, 18 Jan 2022 13:39:52 +0900
+Subject: [PATCH 09/11] test/py: efi_capsule: align with the syntax change of
+ mkeficapsule
+
+Since the syntax of mkeficapsule was changed in the previous commit,
+we need to modify command line arguments in a pytest script.
+
+Signed-off-by: AKASHI Takahiro <takahiro.akashi@linaro.org>
+Reviewed-by: Simon Glass <sjg@chromium.org>
+---
+ test/py/tests/test_efi_capsule/conftest.py | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/test/py/tests/test_efi_capsule/conftest.py b/test/py/tests/test_efi_capsule/conftest.py
+index 27c05971ca..a5a25c53dc 100644
+--- a/test/py/tests/test_efi_capsule/conftest.py
++++ b/test/py/tests/test_efi_capsule/conftest.py
+@@ -80,10 +80,10 @@ def efi_capsule_data(request, u_boot_config):
+         check_call('cd %s; %s/tools/mkimage -f uboot_bin_env.its uboot_bin_env.itb' %
+                    (data_dir, u_boot_config.build_dir),
+                    shell=True)
+-        check_call('cd %s; %s/tools/mkeficapsule --fit uboot_bin_env.itb --index 1 Test01' %
++        check_call('cd %s; %s/tools/mkeficapsule --index 1 --fit uboot_bin_env.itb Test01' %
+                    (data_dir, u_boot_config.build_dir),
+                    shell=True)
+-        check_call('cd %s; %s/tools/mkeficapsule --raw u-boot.bin.new --index 1 Test02' %
++        check_call('cd %s; %s/tools/mkeficapsule --index 1 --raw u-boot.bin.new Test02' %
+                    (data_dir, u_boot_config.build_dir),
+                    shell=True)
+         if capsule_auth_enabled:
+-- 
+2.17.1
+

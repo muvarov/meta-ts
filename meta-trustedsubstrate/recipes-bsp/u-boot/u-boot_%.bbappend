@@ -12,12 +12,12 @@ do_configure:prepend() {
 	cp ${WORKDIR}/ubootefi.var ${S}/
 }
 
-
 MACHINE_UBOOT_REQUIRE ?= ""
 
 MACHINE_UBOOT_REQUIRE:rockpi4b = "u-boot-rockpi4b.inc"
 MACHINE_UBOOT_REQUIRE:rpi4 = "u-boot-rpi4.inc"
 MACHINE_UBOOT_REQUIRE:synquacer = "u-boot-synquacer.inc"
+MACHINE_UBOOT_REQUIRE:qemuarm64-secureboot = "u-boot-qemuarm64-secureboot.inc"
 
 require ${MACHINE_UBOOT_REQUIRE}
 
