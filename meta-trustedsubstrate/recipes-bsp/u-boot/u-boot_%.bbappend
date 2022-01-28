@@ -21,4 +21,5 @@ MACHINE_UBOOT_REQUIRE:qemuarm64-secureboot = "u-boot-qemuarm64-secureboot.inc"
 
 require ${MACHINE_UBOOT_REQUIRE}
 
-require u-boot-certs.inc
+# bug in update?
+#require u-boot-certs.inc
