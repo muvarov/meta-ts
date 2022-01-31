@@ -4,6 +4,7 @@ header:
 repos:
   meta-openembedded:
     url: https://git.openembedded.org/meta-openembedded
+    refspec: 18ebc9d64ffef08dfb0924897054659d48de6afb
     layers:
       meta-filesystems:
       meta-networking:
