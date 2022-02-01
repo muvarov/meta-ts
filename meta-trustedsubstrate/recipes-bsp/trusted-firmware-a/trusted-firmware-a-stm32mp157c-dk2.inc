@@ -15,12 +15,13 @@ FILESEXTRAPATHS:prepend := "${THISDIR}/files/stm32mp1:"
 SRC_URI:append = " file://0001-fix-stm32mp1-fix-dtc-version-check.patch"
 
 TFA_DEBUG = "1"
-TFA_UBOOT = "1"
+TFA_UBOOT = "0"
 TFA_MBEDTLS = "0"
 TFA_BUILD_TARGET = "all fip"
 TFA_INSTALL_TARGET = ""
 
 TFA_TARGET_PLATFORM = "stm32mp1"
+TFA_DEVICETREE = "stm32mp157c-dk2.dtb"
 
 # Enabling Secure-EL1 Payload Dispatcher (SPD)
 # TFA_SPD = "opteed"
@@ -34,20 +35,20 @@ inherit deploy
 # https://wiki.st.com/stm32mpu/wiki/How_to_configure_TF-A_FIP
 
 EXTRA_OEMAKE:append = " \
-                        ARCH=aarch32 \
-                        TARGET_PLATFORM=${TFA_TARGET_PLATFORM} \
+                        ARCH=aarch32 ARM_ARCH_MAJOR=7 \
                         PLAT=${TFA_TARGET_PLATFORM} \
+                        DTB_FILE_NAME=${TFA_DEVICETREE} \
                         AARCH32_SP=optee STM32MP_SDMMC=1 STM32MP_EMMC=1 \
+                        BL33=${DEPLOY_DIR_IMAGE}/u-boot-nodtb.bin \
                         BL33_CFG=${DEPLOY_DIR_IMAGE}/stm32mp157c-dk2.dtb \
                         BL32=${RECIPE_SYSROOT}/lib/firmware/tee-header_v2.bin \
                         BL32_EXTRA1=${RECIPE_SYSROOT}/lib/firmware/tee-pager_v2.bin \
                         BL32_EXTRA2=${RECIPE_SYSROOT}/lib/firmware/tee-pageable_v2.bin \
-                        LOG_LEVEL=50 \
+                        LOG_LEVEL=1 \
 			"
 
 do_install:append() {
-	mkdir -p ${DEPLOYDIR}
-	cp `pwd`/stm32mp1/debug/fip.bin ${DEPLOYDIR}/
 	mkdir -p ${D}/firmware
-	cp `pwd`/stm32mp1/debug/fip.bin ${D}/firmware/
+	cp ${B}/stm32mp1/debug/tf-a-stm32mp157c-dk2.stm32 ${D}/firmware
+	cp ${B}/stm32mp1/debug/fip.bin ${D}/firmware/
 }
