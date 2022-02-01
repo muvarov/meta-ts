@@ -14,7 +14,7 @@ FILESEXTRAPATHS:prepend := "${THISDIR}/files/stm32mp1:"
 
 SRC_URI:append = " file://0001-fix-stm32mp1-fix-dtc-version-check.patch"
 
-TFA_DEBUG = "1"
+TFA_DEBUG = "0"
 TFA_UBOOT = "0"
 TFA_MBEDTLS = "0"
 TFA_BUILD_TARGET = "all fip"
@@ -49,6 +49,6 @@ EXTRA_OEMAKE:append = " \
 
 do_install:append() {
 	mkdir -p ${D}/firmware
-	cp ${B}/stm32mp1/debug/tf-a-stm32mp157c-dk2.stm32 ${D}/firmware
-	cp ${B}/stm32mp1/debug/fip.bin ${D}/firmware/
+	cp ${B}/stm32mp1/release/tf-a-stm32mp157c-dk2.stm32 ${D}/firmware
+	cp ${B}/stm32mp1/release/fip.bin ${D}/firmware/
 }
