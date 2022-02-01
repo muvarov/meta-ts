@@ -58,3 +58,6 @@ local_conf_header:
     BB_SIGNATURE_HANDLER = "OEEquivHash"
 
 machine: unset
+
+target:
+  - ts-firmware
