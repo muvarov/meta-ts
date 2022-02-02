@@ -1,0 +1,7 @@
+# short-description: Create SD card image with a boot partition
+# long-description: Creates a partitioned SD card image
+#
+bootloader --ptable gpt
+part fsbl1 --source rawcopy --fstype=ext4 --fsoptions "noauto" --part-name=fsbl1 --sourceparams="file=${DEPLOY_DIR_IMAGE}/tf-a-stm32mp157c-ev1.stm32" --ondisk mmcblk --part-type 0x8301 --fixed-size 256K
+part fsbl2 --source rawcopy --fstype=ext4 --fsoptions "noauto" --part-name=fsbl2 --sourceparams="file=${DEPLOY_DIR_IMAGE}/tf-a-stm32mp157c-ev1.stm32" --ondisk mmcblk --part-type 0x8301 --fixed-size 256K
+part ssbl  --source rawcopy --fstype=ext4 --fsoptions "noauto" --part-name=fip --sourceparams="file=${DEPLOY_DIR_IMAGE}/fip.bin" --ondisk mmcblk --part-type 0x8301 --fixed-size 4096K
