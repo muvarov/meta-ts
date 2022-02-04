@@ -1,7 +1,5 @@
 FILESEXTRAPATHS:prepend := "${THISDIR}/${PN}:"
 
-SRC_URI:append = " file://ubootefi.var"
-
 SRC_URI:append:stm32mp157c-dk2 = " file://stm32mp157c_dk2_trusted_defconfig"
 SRC_URI:append:stm32mp157c-ev1 = " file://stm32mp157c_ev1_trusted_defconfig"
 COMPATIBLE_MACHINE:stm32mp157c-dk2 = "stm32mp157c-dk2"
@@ -11,7 +9,6 @@ SRC_URI:append:qemuarm64-secureboot = " file://qemu_arm64_defconfig"
 
 do_configure:prepend() {
 	cp -r ${WORKDIR}/*_defconfig ${S}/configs/ || true
-	cp ${WORKDIR}/ubootefi.var ${S}/
 }
 
 MACHINE_UBOOT_REQUIRE ?= ""
