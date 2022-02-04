@@ -7,8 +7,6 @@ SRC_URI += "file://uefi-certificates/PK.esl"
 
 SRC_URI += "file://uefi-certificates/ms.esl"
 
-SRC_URI += "file://0001-efi_loader-Don-t-authenticate-certificates-with-CAs.patch"
-
 do_compile:prepend() {
 	${S}/tools/efivar.py set -i ${S}/ubootefi.var -n pk  -d ${WORKDIR}/uefi-certificates/PK.esl  -t file
 	${S}/tools/efivar.py set -i ${S}/ubootefi.var -n kek -d ${WORKDIR}/uefi-certificates/KEK.esl -t file
