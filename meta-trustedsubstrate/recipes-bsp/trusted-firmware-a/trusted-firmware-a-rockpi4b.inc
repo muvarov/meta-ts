@@ -3,7 +3,7 @@
 COMPATIBLE_MACHINE = "rockpi4b"
 
 SRC_URI = "git://git.trustedfirmware.org/TF-A/trusted-firmware-a.git;protocol=https;name=tfa;branch=master"
-SRCREV_tfa = "e537bcdedb16907ecab911e851c1dc4f35411b49"
+SRCREV_tfa = "e0a6a512b51558b64eb500e6b731e4c743050af2"
 LIC_FILES_CHKSUM="file://docs/license.rst;md5=b2c740efedc159745b9b31f88ff03dde file://mbedtls/LICENSE;md5=3b83ef96387f14655fc854ddc3c6bd57"
 
 PV .= "+git${SRCREV_tfa}"
@@ -44,3 +44,5 @@ EXTRA_OEMAKE:append = " \
 addtask deploy before do_build after do_compile
 
 FILES:${PN} = "/boot /firmware"
+
+TOOLCHAIN = "gcc"

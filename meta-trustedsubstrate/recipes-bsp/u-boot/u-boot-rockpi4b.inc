@@ -1,13 +1,15 @@
 # Generate Rockchip style loader binaries
 inherit deploy
 
-SRCREV = "4e81f3be340072ad2c0aac093677333702f14f22"
+SRCREV = "006fddde01da7e8b3c7cad4a35f3245edc894ab4"
 
 SRC_URI:append = " file://rockpi4b_defconfig"
-# SRC_URI:append = " file://0004-phy-rockchip-inno-usb2-fix-hang-when-multiple-controllers-exit.patch"
+SRC_URI:append = " file://0004-phy-rockchip-inno-usb2-fix-hang-when-multiple-controllers-exit.patch"
 COMPATIBLE_MACHINE = "rockpi4b"
 
 DEPENDS += "trusted-firmware-a"
+
+PARALLEL_MAKE = ""
 
 do_compile:prepend() {
 	export BL31="${RECIPE_SYSROOT}/firmware/bl31.elf"
@@ -21,3 +23,6 @@ do_deploy:append() {
 	cp ${B}/rockpi4b_defconfig/idbloader.img  ${DEPLOYDIR}/idbloader.img
 	cp ${B}/rockpi4b_defconfig/u-boot.itb ${DEPLOYDIR}/u-boot.itb
 }
+
+ATF_DEPENDS = " trusted-firmware-a:do_deploy"
+do_compile[depends] .= "${ATF_DEPENDS}"

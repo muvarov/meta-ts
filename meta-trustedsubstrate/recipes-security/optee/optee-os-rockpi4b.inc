@@ -5,7 +5,7 @@ PV .= "+git${SRCREV}"
 
 DEPENDS += "python3-pycryptodomex-native python3-cryptography-native"
 
-FILESEXTRAPATHS:prepend := "${THISDIR}/files/optee-os/lede-rockpi4b:"
+FILESEXTRAPATHS:prepend := "${THISDIR}/files/optee-os/rockpi4b:"
 
 COMPATIBLE_MACHINE = "rockpi4b"
 
