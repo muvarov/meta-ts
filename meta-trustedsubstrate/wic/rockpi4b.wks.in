@@ -22,4 +22,4 @@ part reserved2  --offset 4096   --fixed-size 4096K
 part loader2    --offset 8192   --fixed-size 4096K --source rawcopy --sourceparams="file=u-boot.${UBOOT_SUFFIX}"
 part atf        --offset 12288  --fixed-size 4096K
 #part /boot      --offset 16384  --fstype=vfat --label boot --active --align 4 --sourceparams="loader=u-boot" --fixed-size 4M
-part /boot-efi --fstype=vfat --label bootfs --active --align 4 --uuid 00000000-1234-1111-2222-000123456789 --use-label --part-name="ESP" --part-type 0xef00 --fixed-size 10M
+#part /boot-efi --fstype=vfat --label bootfs --active --align 4 --uuid 00000000-1234-1111-2222-000123456789 --use-label --part-name="ESP" --part-type 0xef00 --fixed-size 128M
