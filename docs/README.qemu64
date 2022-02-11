@@ -3,9 +3,11 @@ QEMU AARCH64
 
 1. Firmware
 The firmware is located at build/tmp/deploy/images/qemuarm64-secureboot/flash.bin
+or available for download at https://snapshots.linaro.org/components/ledge/ts/latest/qemuarm64-secureboot/flash.bin
 
 2. Download LEDGE RP
 http://releases.linaro.org/components/ledge/rp-0.3/ledge-multi-armv8/ledge-qemuarm64/ledge-gateway-ledge-qemuarm64-20211202114859.rootfs.wic.gz
+gunzip ledge-gateway-ledge-qemuarm64-20211202114859.rootfs.wic.gz
 
 3a. QEMU without TPM support
 qemu-system-aarch64 -m 2048 -smp 8  -nographic -cpu cortex-a57 \
@@ -32,4 +34,4 @@ qemu-system-aarch64 -m 2048 -smp 2 -nographic -cpu cortex-a57 \
 4. On U-boot's console
 efidebug boot add -b 1 BootLedge virtio 0:1 efi/boot/bootaa64.efi -i virtio 0:1 ledge-initramfs.rootfs.cpio.gz -s 'console=ttyAMA0,115200 console=tty0 root=UUID=6091b3a4-ce08-3020-93a6-f755a22ef03b rootwait panic=60'
 efidebug boot order 1
-bootefi bootmgr
+bootefi bootmgr (or reboot)
