@@ -52,3 +52,7 @@ do_install:append() {
 	cp ${B}/stm32mp1/release/tf-a-stm32mp157c-ev1.stm32 ${D}/firmware
 	cp ${B}/stm32mp1/release/fip.bin ${D}/firmware/
 }
+
+# Rebuild FIP on u-boot/tee changes
+FIP_DEPENDS = "u-boot:do_deploy optee-os:do_deploy"
+do_compile[depends] .= "${FIP_DEPENDS}"

@@ -1,6 +1,7 @@
 # ST STM32MP157 machines specific TFA support
 
 COMPATIBLE_MACHINE = "stm32mp157c-dk2"
+SRC_URI:append = " file://stm32mp157c_dk2_trusted_defconfig"
 
 SRC_URI = "git://git.trustedfirmware.org/TF-A/trusted-firmware-a.git;protocol=https;name=tfa;branch=master"
 
