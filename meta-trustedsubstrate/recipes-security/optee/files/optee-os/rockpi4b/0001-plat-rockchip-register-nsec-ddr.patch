@@ -1,0 +1,27 @@
+From abfcad9529e5bf105d2cc3e3d8c9e4b38fc96aca Mon Sep 17 00:00:00 2001
+From: Peter Griffin <peter.griffin@linaro.org>
+Date: Thu, 17 Feb 2022 13:56:32 +0000
+Subject: [PATCH] plat-rockchip: register nsec ddr
+
+Upstream-status:  Inappropriate [board configuration]
+Signed-off-by: Peter Griffin <peter.griffin@linaro.org>
+---
+ core/arch/arm/plat-rockchip/main.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/core/arch/arm/plat-rockchip/main.c b/core/arch/arm/plat-rockchip/main.c
+index 3afcd301..6dae00b9 100644
+--- a/core/arch/arm/plat-rockchip/main.c
++++ b/core/arch/arm/plat-rockchip/main.c
+@@ -23,6 +23,8 @@ register_phys_mem_pgdir(MEM_AREA_IO_NSEC,
+ #endif
+ 
+ register_phys_mem_pgdir(MEM_AREA_IO_SEC, GIC_BASE, GIC_SIZE);
++register_ddr(0x0, 0x30000000);
++register_ddr(0x32400000, 0xC5A00000);
+ 
+ void main_init_gic(void)
+ {
+-- 
+2.25.1
+
