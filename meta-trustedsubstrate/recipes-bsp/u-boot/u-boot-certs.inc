@@ -1,20 +1,16 @@
 DEPENDS += " python3-pyopenssl-native"
 
-SRC_URI += "file://uefi-certificates/db.esl"
-SRC_URI += "file://uefi-certificates/dbx.esl"
-SRC_URI += "file://uefi-certificates/KEK.esl"
-SRC_URI += "file://uefi-certificates/PK.esl"
-
-SRC_URI += "file://uefi-certificates/ms.esl"
-
 do_compile:prepend() {
-	${S}/tools/efivar.py set -i ${S}/ubootefi.var -n pk  -d ${WORKDIR}/uefi-certificates/PK.esl  -t file
-	${S}/tools/efivar.py set -i ${S}/ubootefi.var -n kek -d ${WORKDIR}/uefi-certificates/KEK.esl -t file
+	if [ "x${UEFI_CERT_FILE}" != "x" ]; then
+		ls -l ${UEFI_CERT_FILE}
+		mkdir uefi_certs
+		tar xpvfz ${UEFI_CERT_FILE} -C uefi_certs
 
-	cat  ${WORKDIR}/uefi-certificates/db.esl ${WORKDIR}/uefi-certificates/ms.esl > db.esl
-	${S}/tools/efivar.py set -i ${S}/ubootefi.var -n db  -d db.esl  -t file
-
-	${S}/tools/efivar.py set -i ${S}/ubootefi.var -n dbx -d ${WORKDIR}/uefi-certificates/dbx.esl -t file
-
-	${S}/tools/efivar.py print -i ${S}/ubootefi.var
+		${S}/tools/efivar.py set -i ${S}/ubootefi.var -n pk  -d uefi_certs/PK.esl  -t file
+		${S}/tools/efivar.py set -i ${S}/ubootefi.var -n kek -d uefi_certs/KEK.esl -t file
+		${S}/tools/efivar.py set -i ${S}/ubootefi.var -n db  -d uefi_certs/db.esl  -t file
+		${S}/tools/efivar.py set -i ${S}/ubootefi.var -n dbx -d uefi_certs/dbx.esl -t file
+		${S}/tools/efivar.py print -i ${S}/ubootefi.var
+		rm -rf uefi_certs
+	fi
 }
