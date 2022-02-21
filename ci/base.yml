@@ -32,6 +32,7 @@ repos:
 env:
   BB_LOGCONFIG: ""
   TOOLCHAIN_DIR: ""
+  UEFI_CERT_FILE: "${TOPDIR}/../meta-trustedsubstrate/uefi-certificates/uefi_certs.tgz"
 
 local_conf_header:
   base: |
