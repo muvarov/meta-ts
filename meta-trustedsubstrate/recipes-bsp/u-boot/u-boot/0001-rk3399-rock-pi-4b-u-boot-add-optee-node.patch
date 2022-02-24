@@ -1,0 +1,32 @@
+From 2d4d4fe260732877f1d887840c9ccaba4c0734ae Mon Sep 17 00:00:00 2001
+From: Peter Griffin <peter.griffin@linaro.org>
+Date: Fri, 18 Feb 2022 14:40:20 +0000
+Subject: [PATCH] rk3399-rock-pi-4b-u-boot: add optee node
+
+Upstream-Status: Submitted (u-boot@lists.denx.de)
+Signed-off-by: Peter Griffin <peter.griffin@linaro.org>
+---
+ arch/arm/dts/rk3399-rock-pi-4b-u-boot.dtsi | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/arch/arm/dts/rk3399-rock-pi-4b-u-boot.dtsi b/arch/arm/dts/rk3399-rock-pi-4b-u-boot.dtsi
+index 85ee5770ad..5640f5afbf 100644
+--- a/arch/arm/dts/rk3399-rock-pi-4b-u-boot.dtsi
++++ b/arch/arm/dts/rk3399-rock-pi-4b-u-boot.dtsi
+@@ -4,3 +4,13 @@
+  */
+ 
+ #include "rk3399-rock-pi-4-u-boot.dtsi"
++
++/ {
++        firmware {
++                optee {
++                        compatible = "linaro,optee-tz";
++                        method = "smc";
++                };
++        };
++
++};
+-- 
+2.25.1
+
