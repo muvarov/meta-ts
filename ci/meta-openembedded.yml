@@ -4,10 +4,14 @@ header:
 repos:
   meta-openembedded:
     url: https://git.openembedded.org/meta-openembedded
-    refspec: 18ebc9d64ffef08dfb0924897054659d48de6afb
+    refspec: cf0ed4239196a76800f8c2facb5a285409b8147a
     layers:
       meta-filesystems:
       meta-networking:
       meta-oe:
       meta-python:
       meta-perl:
+    patches:
+      p1:
+          repo : meta-openembedded
+          path : ../patches/0003-Revert-python3-wheel-drop-moved-to-oe-core.patch
