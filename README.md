@@ -46,6 +46,7 @@ Build
 	- kas build ci/stm32mp157c-ev1.yaml
 	- kas build ci/rockpi4b.yml
 	- kas build ci/rpi4.yml
+	- kas build ci/zynqmp-starter.yml
 
 Debugging
 ---------

@@ -1,0 +1,328 @@
+From e3f341499958bf27dc3ace56f85f95c689e15148 Mon Sep 17 00:00:00 2001
+Message-Id: <e3f341499958bf27dc3ace56f85f95c689e15148.1645613079.git.michal.simek@xilinx.com>
+From: Michal Simek <michal.simek@xilinx.com>
+Date: Wed, 23 Feb 2022 10:22:58 +0100
+Subject: [PATCH] som: Kria specific setting configurations
+
+And also variable files and script for generation.
+
+Signed-off-by: Michal Simek <michal.simek@xilinx.com>
+---
+ configs/xilinx_zynqmp_virt_defconfig |  28 +++-
+ som.its                              | 234 +++++++++++++++++++++++++++
+ vars                                 |  62 +++++++
+ 4 files changed, 333 insertions(+), 8 deletions(-)
+ create mode 100644 som.its
+ create mode 100644 vars
+
+diff --git a/som.its b/som.its
+new file mode 100644
+index 000000000000..2b4f3b8e2e9b
+--- /dev/null
++++ b/som.its
+@@ -0,0 +1,234 @@
++/dts-v1/;
++
++/ {
++	description = "DT Blob Creation";
++
++	images {
++		fdt-system-top {
++			description = "SMK";
++			data = /incbin/("arch/arm/dts/zynqmp-smk-k26-revA.dtb");
++			type = "flat_dt";
++			arch = "arm64";
++			compression = "none";
++			hash-1 {
++				algo = "md5";
++				};
++			};
++		fdt-zynqmp-smk-k26-xcl2g-revA-sck-kr-g-revA {
++			description = "zynqmp-smk-k26-xcl2g-revA-sck-kr-g-revA";
++			data = /incbin/("zynqmp-smk-k26-xcl2g-revA-sck-kr-g-revA.dtb");
++			type = "flat_dt";
++			arch = "arm64";
++			compression = "none";
++			hash-1 {
++				algo = "md5";
++				};
++			};
++		fdt-zynqmp-smk-k26-xcl2g-revA-sck-kr-g-revB {
++			description = "zynqmp-smk-k26-xcl2g-revA-sck-kr-g-revB";
++			data = /incbin/("zynqmp-smk-k26-xcl2g-revA-sck-kr-g-revB.dtb");
++			type = "flat_dt";
++			arch = "arm64";
++			compression = "none";
++			hash-1 {
++				algo = "md5";
++				};
++			};
++		fdt-zynqmp-smk-k26-xcl2g-revA-sck-kv-g-revA {
++			description = "zynqmp-smk-k26-xcl2g-revA-sck-kv-g-revA";
++			data = /incbin/("zynqmp-smk-k26-xcl2g-revA-sck-kv-g-revA.dtb");
++			type = "flat_dt";
++			arch = "arm64";
++			compression = "none";
++			hash-1 {
++				algo = "md5";
++				};
++			};
++		fdt-zynqmp-smk-k26-xcl2g-revA-sck-kv-g-revB {
++			description = "zynqmp-smk-k26-xcl2g-revA-sck-kv-g-revB";
++			data = /incbin/("zynqmp-smk-k26-xcl2g-revA-sck-kv-g-revB.dtb");
++			type = "flat_dt";
++			arch = "arm64";
++			compression = "none";
++			hash-1 {
++				algo = "md5";
++				};
++			};
++	};
++
++	configurations {
++		default = "config_1";
++		config_1 {
++			description = "system-top";
++			fdt = "fdt-system-top";
++		};
++		config_2 {
++			description = "zynqmp-smk-k26-xcl2g-revA-sck-kr-g-revA";
++			fdt = "fdt-zynqmp-smk-k26-xcl2g-revA-sck-kr-g-revA";
++		};
++		config_3 {
++			description = "zynqmp-smk-k26-xcl2g-revA-sck-kr-g-revB";
++			fdt = "fdt-zynqmp-smk-k26-xcl2g-revA-sck-kr-g-revB";
++		};
++		config_4 {
++			description = "zynqmp-smk-k26-xcl2g-revA-sck-kv-g-revA";
++			fdt = "fdt-zynqmp-smk-k26-xcl2g-revA-sck-kv-g-revA";
++		};
++		config_5 {
++			description = "zynqmp-smk-k26-xcl2g-revA-sck-kv-g-revB";
++			fdt = "fdt-zynqmp-smk-k26-xcl2g-revA-sck-kv-g-revB";
++		};
++		config_6 {
++			description = "zynqmp-smk-k26-xcl2g-revA-sck-kv-g-revZ";
++			fdt = "fdt-zynqmp-smk-k26-xcl2g-revA-sck-kv-g-revA";
++		};
++		config_7 {
++			description = "zynqmp-smk-k26-xcl2g-revA-sck-kv-g-rev1";
++			fdt = "fdt-zynqmp-smk-k26-xcl2g-revA-sck-kv-g-revB";
++		};
++		config_8 {
++			description = "zynqmp-smk-k26-xcl2g-revB-sck-kv-g-revA";
++			fdt = "fdt-zynqmp-smk-k26-xcl2g-revA-sck-kv-g-revA";
++		};
++		config_9 {
++			description = "zynqmp-smk-k26-xcl2g-revB-sck-kv-g-revZ";
++			fdt = "fdt-zynqmp-smk-k26-xcl2g-revA-sck-kv-g-revA";
++		};
++		config_10 {
++			description = "zynqmp-smk-k26-xcl2g-revB-sck-kv-g-revB";
++			fdt = "fdt-zynqmp-smk-k26-xcl2g-revA-sck-kv-g-revB";
++		};
++		config_11 {
++			description = "zynqmp-smk-k26-xcl2g-revB-sck-kv-g-rev1";
++			fdt = "fdt-zynqmp-smk-k26-xcl2g-revA-sck-kv-g-revB";
++		};
++		config_12 {
++			description = "zynqmp-smk-k26-xcl2g-rev1-sck-kv-g-revA";
++			fdt = "fdt-zynqmp-smk-k26-xcl2g-revA-sck-kv-g-revA";
++		};
++		config_13 {
++			description = "zynqmp-smk-k26-xcl2g-rev1-sck-kv-g-revZ";
++			fdt = "fdt-zynqmp-smk-k26-xcl2g-revA-sck-kv-g-revA";
++		};
++		config_14 {
++			description = "zynqmp-smk-k26-xcl2g-rev1-sck-kv-g-revB";
++			fdt = "fdt-zynqmp-smk-k26-xcl2g-revA-sck-kv-g-revB";
++		};
++		config_15 {
++			description = "zynqmp-smk-k26-xcl2g-rev1-sck-kv-g-rev1";
++			fdt = "fdt-zynqmp-smk-k26-xcl2g-revA-sck-kv-g-revB";
++		};
++		config_16 {
++			description = "zynqmp-smk-k26-xcl2g-revA-sck-kr-g-rev1";
++			fdt = "fdt-zynqmp-smk-k26-xcl2g-revA-sck-kr-g-revB";
++		};
++		config_17 {
++			description = "zynqmp-smk-k26-xcl2g-revB-sck-kr-g-revA";
++			fdt = "fdt-zynqmp-smk-k26-xcl2g-revA-sck-kr-g-revA";
++		};
++		config_18 {
++			description = "zynqmp-smk-k26-xcl2g-revB-sck-kr-g-revB";
++			fdt = "fdt-zynqmp-smk-k26-xcl2g-revA-sck-kr-g-revB";
++		};
++		config_19 {
++			description = "zynqmp-smk-k26-xcl2g-revB-sck-kr-g-rev1";
++			fdt = "fdt-zynqmp-smk-k26-xcl2g-revA-sck-kr-g-revB";
++		};
++		config_20 {
++			description = "zynqmp-smk-k26-xcl2g-rev1-sck-kr-g-revA";
++			fdt = "fdt-zynqmp-smk-k26-xcl2g-revA-sck-kr-g-revA";
++		};
++		config_21 {
++			description = "zynqmp-smk-k26-xcl2g-rev1-sck-kr-g-revB";
++			fdt = "fdt-zynqmp-smk-k26-xcl2g-revA-sck-kr-g-revB";
++		};
++		config_22 {
++			description = "zynqmp-smk-k26-xcl2g-rev1-sck-kr-g-rev1";
++			fdt = "fdt-zynqmp-smk-k26-xcl2g-revA-sck-kr-g-revB";
++		};
++		config_23 {
++			description = "zynqmp-smk-k26-xcl2g-ed-revA-sck-kv-g-revA";
++			fdt = "fdt-zynqmp-smk-k26-xcl2g-revA-sck-kv-g-revA";
++		};
++		config_24 {
++			description = "zynqmp-smk-k26-xcl2g-ed-revA-sck-kv-g-revB";
++			fdt = "fdt-zynqmp-smk-k26-xcl2g-revA-sck-kv-g-revB";
++		};
++		config_25 {
++			description = "zynqmp-smk-k26-xcl2g-ed-revA-sck-kr-g-revA";
++			fdt = "fdt-zynqmp-smk-k26-xcl2g-revA-sck-kr-g-revA";
++		};
++		config_26 {
++			description = "zynqmp-smk-k26-xcl2g-ed-revA-sck-kr-g-revB";
++			fdt = "fdt-zynqmp-smk-k26-xcl2g-revA-sck-kr-g-revB";
++		};
++		config_27 {
++			description = "zynqmp-smk-k26-xcl2g-ed-revA-sck-kv-g-revZ";
++			fdt = "fdt-zynqmp-smk-k26-xcl2g-revA-sck-kv-g-revA";
++		};
++		config_28 {
++			description = "zynqmp-smk-k26-xcl2g-ed-revA-sck-kv-g-rev1";
++			fdt = "fdt-zynqmp-smk-k26-xcl2g-revA-sck-kv-g-revB";
++		};
++		config_29 {
++			description = "zynqmp-smk-k26-xcl2g-ed-revB-sck-kv-g-revA";
++			fdt = "fdt-zynqmp-smk-k26-xcl2g-revA-sck-kv-g-revA";
++		};
++		config_30 {
++			description = "zynqmp-smk-k26-xcl2g-ed-revB-sck-kv-g-revZ";
++			fdt = "fdt-zynqmp-smk-k26-xcl2g-revA-sck-kv-g-revA";
++		};
++		config_31 {
++			description = "zynqmp-smk-k26-xcl2g-ed-revB-sck-kv-g-revB";
++			fdt = "fdt-zynqmp-smk-k26-xcl2g-revA-sck-kv-g-revB";
++		};
++		config_32 {
++			description = "zynqmp-smk-k26-xcl2g-ed-revB-sck-kv-g-rev1";
++			fdt = "fdt-zynqmp-smk-k26-xcl2g-revA-sck-kv-g-revB";
++		};
++		config_33 {
++			description = "zynqmp-smk-k26-xcl2g-ed-rev1-sck-kv-g-revA";
++			fdt = "fdt-zynqmp-smk-k26-xcl2g-revA-sck-kv-g-revA";
++		};
++		config_34 {
++			description = "zynqmp-smk-k26-xcl2g-ed-rev1-sck-kv-g-revZ";
++			fdt = "fdt-zynqmp-smk-k26-xcl2g-revA-sck-kv-g-revA";
++		};
++		config_35 {
++			description = "zynqmp-smk-k26-xcl2g-ed-rev1-sck-kv-g-revB";
++			fdt = "fdt-zynqmp-smk-k26-xcl2g-revA-sck-kv-g-revB";
++		};
++		config_36 {
++			description = "zynqmp-smk-k26-xcl2g-ed-rev1-sck-kv-g-rev1";
++			fdt = "fdt-zynqmp-smk-k26-xcl2g-revA-sck-kv-g-revB";
++		};
++		config_37 {
++			description = "zynqmp-smk-k26-xcl2g-ed-revA-sck-kr-g-rev1";
++			fdt = "fdt-zynqmp-smk-k26-xcl2g-revA-sck-kr-g-revB";
++		};
++		config_38 {
++			description = "zynqmp-smk-k26-xcl2g-ed-revB-sck-kr-g-revA";
++			fdt = "fdt-zynqmp-smk-k26-xcl2g-revA-sck-kr-g-revA";
++		};
++		config_39 {
++			description = "zynqmp-smk-k26-xcl2g-ed-revB-sck-kr-g-revB";
++			fdt = "fdt-zynqmp-smk-k26-xcl2g-revA-sck-kr-g-revB";
++		};
++		config_40 {
++			description = "zynqmp-smk-k26-xcl2g-ed-revB-sck-kr-g-rev1";
++			fdt = "fdt-zynqmp-smk-k26-xcl2g-revA-sck-kr-g-revB";
++		};
++		config_41 {
++			description = "zynqmp-smk-k26-xcl2g-ed-rev1-sck-kr-g-revA";
++			fdt = "fdt-zynqmp-smk-k26-xcl2g-revA-sck-kr-g-revA";
++		};
++		config_42 {
++			description = "zynqmp-smk-k26-xcl2g-ed-rev1-sck-kr-g-revB";
++			fdt = "fdt-zynqmp-smk-k26-xcl2g-revA-sck-kr-g-revB";
++		};
++		config_43 {
++			description = "zynqmp-smk-k26-xcl2g-ed-rev1-sck-kr-g-rev1";
++			fdt = "fdt-zynqmp-smk-k26-xcl2g-revA-sck-kr-g-revB";
++		};
++	};
++};
+diff --git a/vars b/vars
+new file mode 100644
+index 000000000000..a49e8b5092ea
+--- /dev/null
++++ b/vars
+@@ -0,0 +1,62 @@
++autoload=no
++baudrate=115200
++boot_a_script=load ${devtype} ${devnum}:${distro_bootpart} ${scriptaddr} ${prefix}${script}; source ${scriptaddr}
++boot_efi_binary=if fdt addr ${fdt_addr_r}; then bootefi bootmgr ${fdt_addr_r};else bootefi bootmgr ${fdtcontroladdr};fi;load ${devtype} ${devnum}:${distro_bootpart} ${kernel_addr_r} efi/boot/bootaa64.efi; if fdt addr ${fdt_addr_r}; then bootefi ${kernel_addr_r} ${fdt_addr_r};else bootefi ${kernel_addr_r} ${fdtcontroladdr};fi
++boot_extlinux=sysboot ${devtype} ${devnum}:${distro_bootpart} any ${scriptaddr} ${prefix}${boot_syslinux_conf}
++boot_net_usb_start=usb start
++boot_prefixes=/ /boot/
++boot_script_dhcp=boot.scr.uimg
++boot_scripts=boot.scr.uimg boot.scr
++boot_syslinux_conf=extlinux/extlinux.conf
++bootcmd_dhcp=run boot_net_usb_start; if dhcp ${scriptaddr} ${boot_script_dhcp}; then source ${scriptaddr}; fi;setenv efi_fdtfile ${fdtfile}; setenv efi_old_vci ${bootp_vci};setenv efi_old_arch ${bootp_arch};setenv bootp_vci PXEClient:Arch:00011:UNDI:003000;setenv bootp_arch 0xb;if dhcp ${kernel_addr_r}; then tftpboot ${fdt_addr_r} dtb/${efi_fdtfile};if fdt addr ${fdt_addr_r}; then bootefi ${kernel_addr_r} ${fdt_addr_r}; else bootefi ${kernel_addr_r} ${fdtcontroladdr};fi;fi;setenv bootp_vci ${efi_old_vci};setenv bootp_arch ${efi_old_arch};setenv efi_fdtfile;setenv efi_old_arch;setenv efi_old_vci;
++bootcmd_jtag=echo JTAG: Trying to boot script at ${scriptaddr} && source ${scriptaddr}; echo JTAG: SCRIPT FAILED: continuing...;
++bootcmd_mmc0=devnum=0; run mmc_boot
++bootcmd_mmc1=devnum=1; run mmc_boot
++bootcmd_pxe=run boot_net_usb_start; dhcp; if pxe get; then pxe boot; fi
++bootcmd_usb0=devnum=0; run usb_boot
++bootcmd_usb1=devnum=1; run usb_boot
++bootcmd_usb2=devnum=2; run usb_boot
++bootcmd_usb3=devnum=3; run usb_boot
++bootdelay=2
++bootfstype=fat
++bootm_low=0
++bootm_size=80000000
++distro_bootcmd=scsi_need_init=; for target in ${boot_targets}; do run bootcmd_${target}; done
++efi_dtb_prefixes=/ /dtb/ /dtb/current/
++fdt_addr_r=0x40000000
++fdt_high=10000000
++fileaddr=18000000
++initrd_high=79000000
++kernel_addr_r=0x18000000
++load_efi_dtb=load ${devtype} ${devnum}:${distro_bootpart} ${fdt_addr_r} ${prefix}${efi_fdtfile}
++mmc_boot=if mmc dev ${devnum}; then devtype=mmc; run scan_dev_for_boot_part; fi
++pxefile_addr_r=0x10000000
++ramdisk_addr_r=0x02100000
++scan_dev_for_boot=echo Scanning ${devtype} ${devnum}:${distro_bootpart}...; for prefix in ${boot_prefixes}; do run scan_dev_for_extlinux; run scan_dev_for_scripts; done;run scan_dev_for_efi;
++scan_dev_for_boot_part=part list ${devtype} ${devnum} -bootable devplist; env exists devplist || setenv devplist 1; for distro_bootpart in ${devplist}; do if fstype ${devtype} ${devnum}:${distro_bootpart} bootfstype; then run scan_dev_for_boot; fi; done; setenv devplist
++scan_dev_for_efi=setenv efi_fdtfile ${fdtfile}; for prefix in ${efi_dtb_prefixes}; do if test -e ${devtype} ${devnum}:${distro_bootpart} ${prefix}${efi_fdtfile}; then run load_efi_dtb; fi;done;if test -e ${devtype} ${devnum}:${distro_bootpart} efi/boot/bootaa64.efi; then echo Found EFI removable media binary efi/boot/bootaa64.efi; run boot_efi_binary; echo EFI LOAD FAILED: continuing...; fi; setenv efi_fdtfile
++scan_dev_for_extlinux=if test -e ${devtype} ${devnum}:${distro_bootpart} ${prefix}${boot_syslinux_conf}; then echo Found ${prefix}${boot_syslinux_conf}; run boot_extlinux; echo SCRIPT FAILED: continuing...; fi
++scan_dev_for_scripts=for script in ${boot_scripts}; do if test -e ${devtype} ${devnum}:${distro_bootpart} ${prefix}${script}; then echo Found U-Boot script ${prefix}${script}; run boot_a_script; echo SCRIPT FAILED: continuing...; fi; done
++script_offset_f=3e80000
++script_size_f=0x80000
++scriptaddr=0x20000000
++usb_boot=usb start; if usb dev ${devnum}; then devtype=usb; run scan_dev_for_boot_part; fi
++preboot=setenv boot_targets; setenv modeboot; cls; run usb_init; run eth_init; usb start
++
++# Boot menu
++bootmenu_delay=5
++bootmenu_0=Auto-Select - 1. CC boot 2. SOM boot=run som_cc_boot || run som_mmc_boot
++bootmenu_1=Carrier Card (CC) boot device=run som_cc_boot
++bootmenu_2=System on Module (SOM) boot device=run som_mmc_boot
++bootmenu_default=0
++
++# SOM specific boot methods
++som_cc_boot=if test ${card1_name} = SCK-KV-G; then setenv boot_targets mmc1 usb0 usb1 usb2 usb3 pxe dhcp && run distro_bootcmd; fi; if test ${card1_name} = SCK-KR-G; then setenv boot_targets usb0 usb1 usb2 usb3 pxe dhcp && run distro_bootcmd; fi;
++som_mmc_boot=setenv boot_targets mmc0 && run distro_bootcmd
++
++starter=SMK-K26-XCL2G
++bootcmd=setenv model $board_name && if setexpr model gsub .*$starter* $starter; then run som_cc_boot; else bootmenu; fi
++
++usb_init=mw 0xFF180208 2020
++
++eth_init=mw 0xFF18020C 0xFC0
+-- 
+2.35.1
+

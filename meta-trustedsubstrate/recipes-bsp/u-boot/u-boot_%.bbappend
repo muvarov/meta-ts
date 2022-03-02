@@ -14,6 +14,7 @@ MACHINE_UBOOT_REQUIRE:synquacer = "u-boot-synquacer.inc"
 MACHINE_UBOOT_REQUIRE:qemuarm64-secureboot = "u-boot-qemuarm64-secureboot.inc"
 MACHINE_UBOOT_REQUIRE:stm32mp157c-dk2 = "u-boot-stm32mp157c-dk2.inc"
 MACHINE_UBOOT_REQUIRE:stm32mp157c-ev1 = "u-boot-stm32mp157c-ev1.inc"
+MACHINE_UBOOT_REQUIRE:zynqmp-starter = "u-boot-zynqmp-starter.inc"
 
 require ${MACHINE_UBOOT_REQUIRE}
 

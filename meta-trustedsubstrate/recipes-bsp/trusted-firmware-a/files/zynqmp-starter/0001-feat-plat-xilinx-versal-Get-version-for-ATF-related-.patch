@@ -1,0 +1,139 @@
+From b7a0f2a8a75a2ab2901eec224d7f0fa5ea21bd8a Mon Sep 17 00:00:00 2001
+Message-Id: <b7a0f2a8a75a2ab2901eec224d7f0fa5ea21bd8a.1645607010.git.michal.simek@xilinx.com>
+From: Ronak Jain <ronak.jain@xilinx.com>
+Date: Fri, 4 Feb 2022 00:42:55 -0800
+Subject: [ATF PATCH 1/2] feat(plat/xilinx/versal): Get version for ATF related
+ EEMI APIs
+
+The patch does below things.
+
+1. As per current implementation, when Linux send a request to ATF to
+ get the version of APIs which are implemented in ATF then ATF wasn't
+ returning any version because there is a check for LIBPM module id.
+ The ATF is used to return version for the APIs which are implemented
+ in the firmware only.
+
+ Hence moved this switch-case before checking module id to get ATF
+ version.
+
+ Also, no need to pass Linux request to the firmware for the APIs
+ which are implemented in ATF instead return success after updating
+ version.
+
+2. As per current implementation, higher 16-bit is used for ATF
+ version and lower 16-bit is used for firmware version. Now, removed
+ 16-bit shift operation and send complete word i.e. 32-bit to Linux
+ user as there is no user who checks ATF version.
+
+3. Add bit mask support in the feature check PM EEMI API for QUERY and
+ IOCTL ids.
+
+Signed-off-by: Ronak Jain <ronak.jain@xilinx.com>
+Acked-by: Tanmay Shah <tanmay.shah@xilinx.com>
+---
+ plat/xilinx/versal/pm_service/pm_api_sys.c  | 39 +++++++++------------
+ plat/xilinx/versal/pm_service/pm_api_sys.h  |  2 +-
+ plat/xilinx/versal/pm_service/pm_svc_main.c |  7 ++--
+ 3 files changed, 22 insertions(+), 26 deletions(-)
+
+diff --git a/plat/xilinx/versal/pm_service/pm_api_sys.c b/plat/xilinx/versal/pm_service/pm_api_sys.c
+index 386d111caf70..821c9c1b1c41 100644
+--- a/plat/xilinx/versal/pm_service/pm_api_sys.c
++++ b/plat/xilinx/versal/pm_service/pm_api_sys.c
+@@ -328,16 +328,29 @@ enum pm_ret_status pm_set_wakeup_source(uint32_t target, uint32_t wkup_device,
+  * @value	Returned supported API version
+  * @flag	0 - Call from secure source
+  *		1 - Call from non-secure source
++ * @ret_payload	Returned supported API version
+  *
+  * @return	Returns status, either success or error+reason
+  */
+-enum pm_ret_status pm_feature_check(uint32_t api_id, unsigned int *version,
++enum pm_ret_status pm_feature_check(uint32_t api_id, uint32_t *ret_payload,
+ 				    uint32_t flag)
+ {
+-	uint32_t payload[PAYLOAD_ARG_CNT], fw_api_version;
+-	uint32_t status;
++	uint32_t payload[PAYLOAD_ARG_CNT];
+ 	uint32_t module_id;
+ 
++	/* Return version of API which are implemented in ATF only */
++	switch (api_id) {
++	case PM_GET_CALLBACK_DATA:
++	case PM_GET_TRUSTZONE_VERSION:
++		ret_payload[0] = PM_API_VERSION_2;
++		return PM_RET_SUCCESS;
++	case TF_A_PM_REGISTER_SGI:
++		ret_payload[0] = PM_API_BASE_VERSION;
++		return PM_RET_SUCCESS;
++	default:
++		break;
++	}
++
+ 	module_id = (api_id & MODULE_ID_MASK) >> 8;
+ 
+ 	/* feature check should be done only for LIBPM module
+@@ -347,27 +360,9 @@ enum pm_ret_status pm_feature_check(uint32_t api_id, unsigned int *version,
+ 		return PM_RET_SUCCESS;
+ 	}
+ 
+-	switch (api_id) {
+-	case PM_GET_CALLBACK_DATA:
+-	case PM_GET_TRUSTZONE_VERSION:
+-		*version = (PM_API_VERSION_2 << 16);
+-		break;
+-	default:
+-		*version = (PM_API_BASE_VERSION << 16);
+-		break;
+-	}
+-
+ 	PM_PACK_PAYLOAD2(payload, LIBPM_MODULE_ID, flag,
+ 			 PM_FEATURE_CHECK, api_id);
+-
+-	status = pm_ipi_send_sync(primary_proc, payload, &fw_api_version, 1);
+-	if (status != PM_RET_SUCCESS) {
+-		return status;
+-	}
+-
+-	*version |= fw_api_version;
+-
+-	return PM_RET_SUCCESS;
++	return pm_ipi_send_sync(primary_proc, payload, ret_payload, 3);
+ }
+ 
+ /**
+diff --git a/plat/xilinx/versal/pm_service/pm_api_sys.h b/plat/xilinx/versal/pm_service/pm_api_sys.h
+index 0c6fc84c6b11..a62375495d5e 100644
+--- a/plat/xilinx/versal/pm_service/pm_api_sys.h
++++ b/plat/xilinx/versal/pm_service/pm_api_sys.h
+@@ -49,7 +49,7 @@ enum pm_ret_status pm_api_ioctl(uint32_t device_id, uint32_t ioctl_id,
+ enum pm_ret_status pm_query_data(uint32_t qid, uint32_t arg1, uint32_t arg2,
+ 				 uint32_t arg3, uint32_t *data, uint32_t flag);
+ unsigned int pm_get_shutdown_scope(void);
+-enum pm_ret_status pm_feature_check(uint32_t api_id, unsigned int *version,
++enum pm_ret_status pm_feature_check(uint32_t api_id, uint32_t *ret_payload,
+ 				    uint32_t flag);
+ enum pm_ret_status pm_load_pdi(uint32_t src, uint32_t address_low,
+ 			       uint32_t address_high, uint32_t flag);
+diff --git a/plat/xilinx/versal/pm_service/pm_svc_main.c b/plat/xilinx/versal/pm_service/pm_svc_main.c
+index ece08cdd8834..229f95e84d56 100644
+--- a/plat/xilinx/versal/pm_service/pm_svc_main.c
++++ b/plat/xilinx/versal/pm_service/pm_svc_main.c
+@@ -252,10 +252,11 @@ static uintptr_t eemi_for_compatibility(uint32_t api_id, uint32_t *pm_arg,
+ 
+ 	case PM_FEATURE_CHECK:
+ 	{
+-		uint32_t version;
++		uint32_t result[PAYLOAD_ARG_CNT] = {0U};
+ 
+-		ret = pm_feature_check(pm_arg[0], &version, security_flag);
+-		SMC_RET1(handle, (uint64_t)ret | ((uint64_t)version << 32));
++		ret = pm_feature_check(pm_arg[0], result, security_flag);
++		SMC_RET2(handle, (uint64_t)ret | ((uint64_t)result[0] << 32),
++			 (uint64_t)result[1] | ((uint64_t)result[2] << 32));
+ 	}
+ 
+ 	case PM_LOAD_PDI:
+-- 
+2.35.1
+
