@@ -12,7 +12,7 @@ repos:
     path: meta-trustedsubstrate
   poky:
     url: https://git.yoctoproject.org/git/poky
-    refspec: a5280f7e303d8b492b26e85fe0a82009806dadfc
+    refspec: 0539b563c6f41fef383429a13c28bf918231d404
     layers:
       meta:
       meta-poky:
@@ -25,7 +25,7 @@ repos:
         path : ../patches/0002-wic-bootimg-efi-implement-include-path.patch
   meta-arm:
     url: git://git.yoctoproject.org/meta-arm
-    refspec: 692ca08b1d90d721eeb259a9a2708f950404cd13
+    refspec: 962173714f8da22fce50d99d2cbe7d32bb11a88d
     layers:
       meta-arm:
       meta-arm-bsp:
