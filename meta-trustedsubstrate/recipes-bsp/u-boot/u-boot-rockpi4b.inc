@@ -6,6 +6,7 @@ SRCREV = "006fddde01da7e8b3c7cad4a35f3245edc894ab4"
 SRC_URI:append = " file://rockpi4b_defconfig"
 SRC_URI:append = " file://0004-phy-rockchip-inno-usb2-fix-hang-when-multiple-controllers-exit.patch"
 SRC_URI:append = " file://0001-rk3399-rock-pi-4b-u-boot-add-optee-node.patch"
+SRC_URI:append = " file://0002-rk3399-rock-pi-4b-u-boot-add-ftpm-dt-node.patch"
 
 COMPATIBLE_MACHINE = "rockpi4b"
 
