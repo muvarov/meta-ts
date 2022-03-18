@@ -18,8 +18,8 @@ OPTEEMACHINE = "rockchip"
 OPTEEOUTPUTMACHINE = "rockchip"
 EXTRA_OEMAKE += " PLATFORM_FLAVOR=rk3399 ARCH=arm"
 
-# Enable optee memory layout and boot logs
-EXTRA_OEMAKE += " CFG_TEE_CORE_LOG_LEVEL=4 CFG_EARLY_CONSOLE=1"
+# Uncoment to enable verbose logs
+#EXTRA_OEMAKE += " CFG_TEE_CORE_LOG_LEVEL=4 CFG_EARLY_CONSOLE=1"
 
 # Buggy optee
 EXTRA_OEMAKE += " CFG_CORE_ASLR=n"
