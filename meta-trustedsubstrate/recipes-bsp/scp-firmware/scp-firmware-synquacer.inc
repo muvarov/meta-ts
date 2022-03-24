@@ -1,4 +1,4 @@
-SRCREV  = "77ffab90a9f6071850475087cc5d40610c621126"
+SRCREV  = "3a6c9511b121d04876ba745655dd190eae79aca4"
 
 LIC_FILES_CHKSUM = "file://license.md;beginline=5;md5=9db9e3d2fb8d9300a6c3d15101b19731 \
                     file://contrib/cmsis/git/LICENSE.txt;md5=e3fc50a88d0a364313df4b21ef20c29e"
