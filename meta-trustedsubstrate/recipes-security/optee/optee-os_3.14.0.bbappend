@@ -1,5 +1,9 @@
 # Machine specific configurations
 
+# 3.16.0
+SRCREV = "d0b742d1564834dac903f906168d7357063d5459"
+PV .= "+git${SRCREV}"
+
 DEPENDS:append = " dtc-native"
 
 MACHINE_OPTEE_OS_REQUIRE ?= ""

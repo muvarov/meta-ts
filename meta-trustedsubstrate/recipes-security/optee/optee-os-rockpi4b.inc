@@ -1,10 +1,5 @@
 SRC_URI = "git://git.trustedfirmware.org/OP-TEE/optee_os.git;protocol=https;branch=master"
 
-#v3.14 sha
-SRCREV = "d21befa5e53eae9db469eba1685f5aa5c6f92c2f"
-
-PV .= "+git${SRCREV}"
-
 DEPENDS += "python3-pycryptodomex-native python3-cryptography-native edk2-firmware"
 
 FILESEXTRAPATHS:prepend := "${THISDIR}/files/optee-os/rockpi4b:"

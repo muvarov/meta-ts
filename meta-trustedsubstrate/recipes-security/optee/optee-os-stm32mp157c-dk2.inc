@@ -1,7 +1,3 @@
-SRC_URI = "git://git.trustedfirmware.org/OP-TEE/optee_os.git;protocol=https;branch=master"
-SRCREV = "d21befa5e53eae9db469eba1685f5aa5c6f92c2f"
-PV .= "+git${SRCREV}"
-
 DEPENDS += "python3-pycryptodomex-native"
 
 FILESEXTRAPATHS:prepend := "${THISDIR}/files/optee-os/stm32mp157c-dk2:"
