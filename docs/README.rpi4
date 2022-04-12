@@ -10,7 +10,7 @@ zcat ts-firmware-rpi4.wic.gz > /dev/sdX
 2. Prepere USB stick with:
 zcat rootfs.wic.gz > /dev/sdUSB
 You can use LEDGE RP for example:
-http://snapshots.linaro.org/components/ledge/oe/ledge-multi-armv8/latest/rpb/ledge-qemuarm64/ledge-iot-ledge-qemuarm64-20220206235911.rootfs.wic.gz
+http://snapshots.linaro.org/components/ledge/oe/ledge-multi-armv8/1321/rpb/ledge-qemuarm64/ledge-iot-ledge-qemuarm64-20220412002942.rootfs.wic.gz
 
 Note: if you used USB stick in other machine with current firmware before booting delete ubootefi.var file for ESP (first one) partition.
 
