@@ -1,0 +1,34 @@
+diff --git a/drivers/tee/optee/core.c b/drivers/tee/optee/core.c
+index dad46aa388a1..ffd13bff074e 100644
+--- a/drivers/tee/optee/core.c
++++ b/drivers/tee/optee/core.c
+@@ -7,6 +7,7 @@
+ #include <cpu_func.h>
+ #include <dm.h>
+ #include <dm/device_compat.h>
++#include <dm/lists.h>
+ #include <log.h>
+ #include <malloc.h>
+ #include <tee.h>
+@@ -641,6 +642,8 @@ static int optee_probe(struct udevice *dev)
+ {
+ 	struct optee_pdata *pdata = dev_get_plat(dev);
+ 	u32 sec_caps;
++	struct udevice *child;
++	int ret;
+ 
+ 	if (!is_optee_api(pdata->invoke_fn)) {
+ 		dev_err(dev, "OP-TEE api uid mismatch\n");
+@@ -665,6 +668,12 @@ static int optee_probe(struct udevice *dev)
+ 		return -ENOENT;
+ 	}
+ 
++	if (IS_ENABLED(CONFIG_TPM2_FTPM_TEE)) {
++		ret = device_bind_driver(dev, "ftpm_tee", "ftpm_tee", &child);
++		if (ret)
++			return ret;
++	}
++
+ 	return 0;
+ }
+ 

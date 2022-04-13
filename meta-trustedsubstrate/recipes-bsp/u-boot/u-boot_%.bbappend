@@ -3,6 +3,8 @@ FILESEXTRAPATHS:prepend := "${THISDIR}/${PN}:"
 # Always increment PR on u-boot config change or patches
 PR="r1.ledge"
 
+#2022.04
+SRCREV="e4b6ebd3de982ae7185dbf689a030e73fd06e0d2"
 SRC_URI:append:qemuarm64-secureboot = " file://qemu_arm64_defconfig"
 
 do_configure:prepend() {

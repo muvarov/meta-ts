@@ -6,28 +6,24 @@ Subject: [PATCH] rk3399-rock-pi-4b-u-boot.dtsi: reserve optee memory to avoid
 
 Signed-off-by: Peter Griffin <peter.griffin@linaro.org>
 ---
- arch/arm/dts/rk3399-rock-pi-4b-u-boot.dtsi | 11 +++++++++++
- 1 file changed, 11 insertions(+)
-
 diff --git a/arch/arm/dts/rk3399-rock-pi-4b-u-boot.dtsi b/arch/arm/dts/rk3399-rock-pi-4b-u-boot.dtsi
-index 8d7357f070..77c109fb67 100644
+index 5640f5afbf2e..0fb8b5d3cdf0 100644
 --- a/arch/arm/dts/rk3399-rock-pi-4b-u-boot.dtsi
 +++ b/arch/arm/dts/rk3399-rock-pi-4b-u-boot.dtsi
-@@ -17,4 +17,15 @@
-                 compatible = "microsoft,ftpm";
+@@ -12,5 +12,14 @@
+                         method = "smc";
+                 };
          };
++        reserved-memory {
++                #address-cells = <2>;
++                #size-cells = <2>;
++                ranges;
  
-+	reserved-memory {
-+		#address-cells = <2>;
-+		#size-cells = <2>;
-+		ranges;
-+
-+		optee@0x30000000 {
-+			reg = <0x0 0x30000000 0x0 0x2400000>;
-+			no-map;
-+		};
-+	};
-+
++                optee@0x30000000 {
++                    reg = <0x0 0x30000000 0x0 0x2400000>;
++                    no-map;
++                };
++           };
  };
 -- 
 2.25.1

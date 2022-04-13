@@ -1,3 +1,2 @@
-SRCREV = "4e81f3be340072ad2c0aac093677333702f14f22"
-
-require u-boot-capsule.inc
+# Temporarily disable capsule creation until upstream u-boot is fixed
+#require u-boot-capsule.inc
