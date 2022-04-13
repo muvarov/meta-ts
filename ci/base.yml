@@ -25,7 +25,7 @@ repos:
         path : ../patches/0002-wic-bootimg-efi-implement-include-path.patch
   meta-arm:
     url: git://git.yoctoproject.org/meta-arm
-    refspec: 962173714f8da22fce50d99d2cbe7d32bb11a88d
+    refspec: 3ee7d019898854f776f95ed31f4b7ea8c8a73dfe
     layers:
       meta-arm:
       meta-arm-bsp:
