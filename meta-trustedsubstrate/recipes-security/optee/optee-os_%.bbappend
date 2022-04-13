@@ -17,3 +17,4 @@ require ${MACHINE_OPTEE_OS_REQUIRE}
 # Add PKCS11 as early TA
 DEPENDS += " python3-cryptography-native "
 EXTRA_OEMAKE:append = " CFG_IN_TREE_EARLY_TAS=pkcs11/fd02c9da-306c-48c7-a49c-bbd827ae86ee "
+EXTRA_OEMAKE:append = " CFG_CORE_HEAP_SIZE=131072 "
