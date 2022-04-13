@@ -15,6 +15,8 @@ EXTRA_OEMAKE += " CFG_TEE_BENCHMARK=n"
 
 EXTRA_OEMAKE:remove = "CFG_ARM64_core=y"
 EXTRA_OEMAKE:remove = "ta-targets=ta_arm64"
+# inherited from our main .bbappend
+EXTRA_OEMAKE:remove = "CFG_CORE_HEAP_SIZE=131072 "
 EXTRA_OEMAKE:append = " CFG_ARM32_core=y ta-targets=ta_arm32 "
 
 EXTRA_OEMAKE:append = " CFG_EMBED_DTB_SOURCE_FILE=stm32mp157c-dk2.dts "
