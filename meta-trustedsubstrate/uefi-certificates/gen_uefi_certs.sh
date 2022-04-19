@@ -26,3 +26,8 @@ sign-efi-sig-list -c KEK.crt -k KEK.key dbx dbx.esl dbx.auth
 #Digest image
 #hash-to-efi-sig-list Image db_Image.hash
 #sign-efi-sig-list -c KEK.crt -k KEK.key db db_Image.hash db_Image.auth
+
+#Empty cert for testing
+touch noPK.esl
+sign-efi-sig-list -c PK.crt -k PK.key PK noPK.esl noPK.auth
+
